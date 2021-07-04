@@ -13,4 +13,14 @@ class ImageUtils {
       fit: boxFit,
     );
   }
+
+  static Widget getOriginalImagesSvg(String assetName,
+      {double width = 20, double height = 20, BoxFit boxFit = BoxFit.fill}) {
+    return SvgPicture.asset(
+      assetName,
+      width: width,
+      height: height,
+      fit: boxFit,
+    );
+  }
 }

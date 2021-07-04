@@ -114,6 +114,27 @@
             </list>
           </value>
         </entry>
+        <entry key="flutter_web_plugins">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../flutter_2.2.2/packages/flutter_web_plugins/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="fluttertoast">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../flutter_2.2.2/.pub-cache/hosted/pub.dartlang.org/fluttertoast-8.0.7/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="js">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../flutter_2.2.2/.pub-cache/hosted/pub.dartlang.org/js-0.6.3/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="json_annotation">
           <value>
             <list>
@@ -355,6 +376,8 @@
       <root url="file://$PROJECT_DIR$/../flutter_2.2.2/.pub-cache/hosted/pub.dartlang.org/flutter_bloc-7.0.1/lib" />
       <root url="file://$PROJECT_DIR$/../flutter_2.2.2/.pub-cache/hosted/pub.dartlang.org/flutter_downloader-1.6.1/lib" />
       <root url="file://$PROJECT_DIR$/../flutter_2.2.2/.pub-cache/hosted/pub.dartlang.org/flutter_svg-0.22.0/lib" />
+      <root url="file://$PROJECT_DIR$/../flutter_2.2.2/.pub-cache/hosted/pub.dartlang.org/fluttertoast-8.0.7/lib" />
+      <root url="file://$PROJECT_DIR$/../flutter_2.2.2/.pub-cache/hosted/pub.dartlang.org/js-0.6.3/lib" />
       <root url="file://$PROJECT_DIR$/../flutter_2.2.2/.pub-cache/hosted/pub.dartlang.org/json_annotation-4.0.1/lib" />
       <root url="file://$PROJECT_DIR$/../flutter_2.2.2/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.10/lib" />
       <root url="file://$PROJECT_DIR$/../flutter_2.2.2/.pub-cache/hosted/pub.dartlang.org/meta-1.3.0/lib" />
@@ -389,6 +412,7 @@
       <root url="file://$PROJECT_DIR$/../flutter_2.2.2/bin/cache/pkg/sky_engine/lib" />
       <root url="file://$PROJECT_DIR$/../flutter_2.2.2/packages/flutter/lib" />
       <root url="file://$PROJECT_DIR$/../flutter_2.2.2/packages/flutter_test/lib" />
+      <root url="file://$PROJECT_DIR$/../flutter_2.2.2/packages/flutter_web_plugins/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

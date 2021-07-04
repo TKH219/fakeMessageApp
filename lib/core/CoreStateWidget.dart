@@ -1,6 +1,8 @@
 
+import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:flutter/material.dart';
 import 'CoreScreenWidget.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 abstract class CoreScreenState<CS extends CoreScreenWidget> extends State<CS> {
 
@@ -56,4 +58,16 @@ abstract class CoreScreenState<CS extends CoreScreenWidget> extends State<CS> {
 
   @protected
   void stateIsReady(BuildContext context) {}
+
+  void showToastMessage(String message,
+      [ToastGravity gravity = ToastGravity.CENTER]) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: gravity,
+        timeInSecForIosWeb: 1,
+        backgroundColor: gray5,
+        textColor: Colors.black,
+        fontSize: 15);
+  }
 }
