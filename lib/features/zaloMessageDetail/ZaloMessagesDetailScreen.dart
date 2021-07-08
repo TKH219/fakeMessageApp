@@ -1,5 +1,7 @@
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
+import 'package:fake_message_screen/features/customView/ConfirmButton.dart';
+import 'package:fake_message_screen/features/customView/FunctionButton.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,6 +19,8 @@ class ZaloMessagesDetailScreen extends CoreScreenWidget {
 
 class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> {
 
+  bool _switchValue = true;
+
   @override
   bool get isSafeArea => false;
 
@@ -24,7 +28,6 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
   PreferredSizeWidget createAppBarContent(BuildContext context) {
     return AppBar(
       backgroundColor: blue_primary_400,
-      backwardsCompatibility: false,
       systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
       centerTitle: false,
       leadingWidth: 12,
@@ -70,11 +73,15 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
           onPressed: () => Navigator.pop(context),
         ),
       ],
+
       leading: IconButton(
         color: Colors.white,
         icon: Icon(Icons.arrow_back_ios),
         padding: EdgeInsets.only(left: 18),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () {
+          print("pop");
+          Navigator.pop(context);
+        }
       ),
     );
   }
@@ -103,11 +110,128 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
                     "11:20");
               }),
           Positioned(
+              bottom: 100,
+              right: 16,
+              child: functionButton()),
+          Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              child: ZaloMessageInputWidget())
+              child: ZaloMessageInputWidget()),
         ],
+      ),
+    );
+  }
+
+  Widget functionButton() {
+    return FunctionButton(
+      onTap: () {
+        showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return Container(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + MediaQuery.of(context).viewInsets.bottom, left: 16, right: 16),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      SizedBox(height: 12),
+                      TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(width: 1, color: gray1),
+                              ),
+                              hintText: "Change Name"),
+                          onChanged: (text) {
+                            print(text);
+                          },
+                        ),
+                      SizedBox(height: 12),
+                      TextField(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(width: 1, color: gray1),
+                              ),
+                              hintText: "Change last time online"),
+                          onChanged: (text) {
+                            print(text);
+                          },
+                        ),
+                      SizedBox(height: 12),
+                      ListTile(
+                        leading: new Icon(Icons.photo),
+                        title: new Text('Add new message'),
+                        onTap: () {
+                          Navigator.pop(context);
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return addNewMessage();
+                              });
+                        },
+                      ),
+                      SizedBox(height: 12),
+                      ListTile(
+                        leading: new Icon(Icons.music_note),
+                        title: new Text('Change receiver avatar'),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      SizedBox(height: 12),
+                      ConfirmButton("done".toUpperCase(), onTapButton: null,)
+                    ],
+                  ),
+                ),
+              );
+            });
+      },
+    );
+  }
+
+  Widget addNewMessage() {
+    return Container(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + MediaQuery.of(context).viewInsets.bottom, left: 16, right: 16),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 16,
+            ),
+            TextField(
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(width: 1, color: gray1),
+                  ),
+                  hintText: "Contents..."),
+              maxLines: 2,
+              onChanged: (text) {
+                print(text);
+              },
+            ),
+            SizedBox(height: 16,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Nguoi gui"),
+                CupertinoSwitch(
+                  value: _switchValue,
+                  onChanged: (value) {
+                    setState(() {
+                      _switchValue = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            SizedBox(height: 16,),
+            ConfirmButton("done".toUpperCase(), onTapButton: null,)
+          ],
+        ),
       ),
     );
   }

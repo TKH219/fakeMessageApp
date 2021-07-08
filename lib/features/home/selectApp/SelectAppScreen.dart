@@ -1,5 +1,6 @@
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
+import 'package:fake_message_screen/route/RouterConstant.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/ImageAssetsConstant.dart';
 import 'package:fake_message_screen/utils/ImageUtils.dart';
@@ -66,35 +67,59 @@ class SelectAppState extends CoreScreenState<SelectAppScreen> {
   @override
   Widget buildMobileLayout(BuildContext context) {
     return GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 20, crossAxisSpacing: 20, childAspectRatio: 1),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 16,
+            childAspectRatio: 1),
         itemCount: AppSupport.values.length,
         padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        // shrinkWrap: true,
         itemBuilder: (context, index) {
-          return _itemAppWidget(AppSupport.values[index].getImagePath);
+          return _itemAppWidget(AppSupport.values[index]);
         });
-    return ListView.builder(
-        itemCount: 3,
-        itemBuilder: (context, index) {
-      return Container(
-        child: Text("testtt"),
-      );
-    });
   }
 
-  Widget _itemAppWidget(String imagePath) {
-    double size = (MediaQuery.of(context).size.width - 52) / 2;
-    return imagePath == ""
-        ? SizedBox.shrink()
-        : InkWell(
-      onTap: () {
+  Widget _itemAppWidget(AppSupport appSupport) {
 
-      },
-          child: Container(
+    double size = (MediaQuery.of(context).size.width - 48) / 2;
+
+    return  Card(
+      elevation: 2.0,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(4.0), topRight: Radius.circular(4.0))),
+      child: InkWell(
+        onTap: () {
+          switch (appSupport) {
+            case AppSupport.IMESS:
+              break;
+            case AppSupport.INSTAGRAM:
+              Navigator.of(context).pushNamed(InstagramMessageDetailRouter);
+              break;
+            case AppSupport.MESSENGER:
+              break;
+            case AppSupport.ZALO:
+              Navigator.of(context).pushNamed(ZaloMessageDetailRouter);
+              break;
+            default:
+              break;
+          }
+        },
+        child: Column(
+          children: [
+            Container(
               color: Colors.transparent,
               padding: EdgeInsets.symmetric(horizontal: 28),
-              child: ImageUtils.getOriginalImagesSvg(imagePath,
-                  height: size, width: size),
+              child: ImageUtils.getOriginalImagesSvg(appSupport.getImagePath,
+                  height: size - 56, width: size - 56),
             ),
-        );
+
+            Text(appSupport.getTitle, style: TextStyles.BODY_2.getStyle.copyWith(color: Colors.black),)
+          ],
+        ),
+      ),
+    );
   }
 }
