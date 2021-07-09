@@ -1,7 +1,14 @@
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
 import 'package:fake_message_screen/features/InstagramMessageDetail/CustomView/IGMessageInputWidget.dart';
+import 'package:fake_message_screen/features/customView/AddNewMessageWidget.dart';
+import 'package:fake_message_screen/features/customView/ConfirmButton.dart';
+import 'package:fake_message_screen/features/customView/CustomTextField.dart';
+import 'package:fake_message_screen/features/customView/FunctionButton.dart';
+import 'package:fake_message_screen/features/customView/FunctionDialogWidget.dart';
+import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageDetailModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
+import 'package:fake_message_screen/utils/Constants.dart';
 import 'package:fake_message_screen/utils/ImageAssetsConstant.dart';
 import 'package:fake_message_screen/utils/ImageUtils.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
@@ -14,12 +21,19 @@ import 'CustomView/IncomingIGMessageWidget.dart';
 import 'CustomView/OutgoingIGMessageWidget.dart';
 
 class InstagramMessageDetailScreen extends CoreScreenWidget {
-
   @override
   InstagramMessageDetailState createState() => InstagramMessageDetailState();
 }
 
-class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetailScreen> {
+class InstagramMessageDetailState
+    extends CoreScreenState<InstagramMessageDetailScreen> {
+  late MessageDetailModel model;
+
+  @override
+  void initState() {
+    super.initState();
+    model = MessageDetailModel();
+  }
 
   @override
   PreferredSizeWidget createAppBarContent(BuildContext context) {
@@ -35,15 +49,13 @@ class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetail
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Mr Ha",
+            model.receiverName,
             style:
-            TextStyles.NORMAL_LABEL.getStyle.copyWith(color: Colors.black),
+                TextStyles.NORMAL_LABEL.getStyle.copyWith(color: Colors.black),
             textAlign: TextAlign.left,
           ),
-          SizedBox(
-            height: 4,
-          ),
-          Text("Truy cap 20 phut truoc",
+          SizedBox(height: 4),
+          Text(model.lastTimeOnline,
               style: TextStyles.CAPTION.getStyle.copyWith(color: gray_600),
               textAlign: TextAlign.left),
         ],
@@ -59,10 +71,7 @@ class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetail
         IconButton(
           color: Colors.white,
           icon: ImageUtils.getImagesSvg(IC_IG_INFO,
-              boxFit: BoxFit.fill,
-              width: 24,
-              height: 24,
-              color: Colors.black),
+              boxFit: BoxFit.fill, width: 24, height: 24, color: Colors.black),
           iconSize: 24,
           padding: EdgeInsets.only(left: 18),
           onPressed: () => Navigator.pop(context),
@@ -83,21 +92,41 @@ class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetail
       color: Colors.white,
       child: Stack(
         children: [
-          ListView.builder(
-              itemCount: 9,
+          ListView.separated(
+              separatorBuilder: (context, index) {
+                return SizedBox(
+                  height: 1,
+                );
+              },
+              padding: EdgeInsets.symmetric(vertical: 16),
+              itemCount: model.contents.length,
               itemBuilder: (context, index) {
-                if (index % 3 == 0) {
-                  return OutgoingIGMessageWidget(
-                      index % 2 == 0
-                          ? "testttt"
-                          : "Đây là mã vạch khai báo y tế..các cô chú có thể khai ở nhà rồi mình ra xét nghiệm cho nhanh ậ. Xin cảm ơn");
-                }
-
-                return IncomingIGMessageWidget(
-                    index % 2 == 0
-                        ? "testttt"
-                        : "Đây là mã vạch khai báo y tế..các cô chú có thể khai ở nhà rồi mình ra xét nghiệm cho nhanh ậ. Xin cảm ơn",);
+                int previousIndex = index - 1;
+                int nextIndex = index + 1;
+                bool shouldShowBorderTop = (index == 0 ||
+                    (previousIndex >= 0 &&
+                        model.contents[previousIndex].messageType !=
+                            model.contents[index].messageType));
+                bool shouldShowBorderBottom =
+                    (index == model.contents.length - 1 ||
+                        (nextIndex < model.contents.length &&
+                            model.contents[nextIndex].messageType !=
+                                model.contents[index].messageType));
+                return (model.contents[index].messageType ==
+                        MessageType.OUTGOING_MESSAGE)
+                    ? OutgoingIGMessageWidget(
+                        model.contents[index].content,
+                        shouldBorderBottomRight: shouldShowBorderBottom,
+                        shouldBorderTopRight: shouldShowBorderTop,
+                      )
+                    : IncomingIGMessageWidget(
+                        model.contents[index].content,
+                        model.receiverAvatar,
+                        shouldBorderBottomLeft: shouldShowBorderBottom,
+                        shouldBorderTopLeft: shouldShowBorderTop,
+                      );
               }),
+          Positioned(bottom: 100, right: 16, child: functionButton()),
           Positioned(
               bottom: MediaQuery.of(context).padding.bottom,
               left: 0,
@@ -108,4 +137,19 @@ class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetail
     );
   }
 
+  Widget functionButton() {
+    return FunctionButton(
+      onTap: () {
+        showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return FunctionDialogWidget(model, (_model) {
+                setState(() {
+                  model = _model;
+                });
+              });
+            });
+      },
+    );
+  }
 }

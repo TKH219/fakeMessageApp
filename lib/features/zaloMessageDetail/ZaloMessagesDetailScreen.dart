@@ -25,8 +25,6 @@ class ZaloMessagesDetailScreen extends CoreScreenWidget {
 
 class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> {
 
-  bool _switchValue = true;
-
   MessageDetailModel model = MessageDetailModel();
 
   @override
@@ -215,47 +213,5 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
         this.model.contents.add(messageModel);
       });
     },);
-    return Container(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + MediaQuery.of(context).viewInsets.bottom, left: 16, right: 16),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            TextField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(width: 1, color: gray1),
-                  ),
-                  hintText: "Contents..."),
-              maxLines: 2,
-              onChanged: (text) {
-                print(text);
-              },
-            ),
-            SizedBox(height: 16,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Nguoi gui"),
-                CupertinoSwitch(
-                  value: _switchValue,
-                  onChanged: (value) {
-                    setState(() {
-                      _switchValue = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 16,),
-            ConfirmButton("done".toUpperCase(), onTapButton: null,)
-          ],
-        ),
-      ),
-    );
   }
 }
