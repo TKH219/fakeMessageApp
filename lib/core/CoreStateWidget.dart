@@ -21,7 +21,7 @@ abstract class CoreScreenState<CS extends CoreScreenWidget> extends State<CS> {
 
     Widget mainContent = GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
+        FocusManager.instance.primaryFocus?.unfocus();
       },
       child: buildMobileLayout(context),
     );

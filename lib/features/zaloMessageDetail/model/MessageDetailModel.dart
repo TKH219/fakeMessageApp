@@ -1,6 +1,3 @@
-
-
-
 import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageItemModel.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -8,8 +5,14 @@ import 'package:json_annotation/json_annotation.dart';
 class MessageDetailModel extends Object {
   String receiverName;
   String lastTimeOnline;
-  String receiverAvatar;
-  List<MessageItemModel> contents;
+  String? receiverAvatar;
+  List<MessageItemModel> contents = [];
 
-  MessageDetailModel(this.receiverName, this.lastTimeOnline, this.receiverAvatar, this.contents);
+  MessageDetailModel(
+      {this.receiverName = "Mr. X",
+      this.lastTimeOnline = 'Vừa mới truy cập',
+      this.receiverAvatar,
+      this.contents = const<MessageItemModel>[]}) {
+    this.contents = [];
+  }
 }

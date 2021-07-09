@@ -2,6 +2,7 @@ import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
 import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageItemModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
+import 'package:fake_message_screen/utils/Constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -10,8 +11,7 @@ import 'CustomTextField.dart';
 
 class AddNewMessageWidget extends CoreScreenWidget {
 
-  Function(MessageItemModel)? onDone;
-
+  final Function(MessageItemModel)? onDone;
 
   @override
   AddNewMessageState createState() => AddNewMessageState();
@@ -44,7 +44,9 @@ class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
                   hintText: "Contents..."),
               maxLines: 2,
               onChanged: (text) {
-                print(text);
+                setState(() {
+                  model.content = text;
+                });
               },
             ),
             SizedBox(height: 16,),
@@ -62,13 +64,19 @@ class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
                 ),
               ],
             ),
-            SizedBox(height: 16,),
+            SizedBox(
+              height: 16,
+            ),
             ConfirmButton("done".toUpperCase(), onTapButton: () {
-             if (widget.onDone != null) {
-               widget.onDone!(model);
-             } else {
-               Navigator.of(context).pop();
-             }
+              this.model.messageType = _switchValue
+                  ? MessageType.OUTGOING_MESSAGE
+                  : MessageType.INCOMING_MESSAGE;
+
+              if (widget.onDone != null) {
+                widget.onDone!(model);
+              }
+
+              Navigator.of(context).pop();
             })
           ],
         ),

@@ -1,8 +1,13 @@
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
+import 'package:fake_message_screen/features/customView/AddNewMessageWidget.dart';
 import 'package:fake_message_screen/features/customView/ConfirmButton.dart';
+import 'package:fake_message_screen/features/customView/CustomTextField.dart';
 import 'package:fake_message_screen/features/customView/FunctionButton.dart';
+import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageDetailModel.dart';
+import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageItemModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
+import 'package:fake_message_screen/utils/Constants.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +18,7 @@ import 'CustomView/OutgoingZaloMessageWidget.dart';
 import 'CustomView/ZaloMessageInputWidget.dart';
 
 class ZaloMessagesDetailScreen extends CoreScreenWidget {
+
   @override
   CoreScreenState<ZaloMessagesDetailScreen> createState() => ZaloMessagesDetailState();
 }
@@ -20,6 +26,8 @@ class ZaloMessagesDetailScreen extends CoreScreenWidget {
 class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> {
 
   bool _switchValue = true;
+
+  MessageDetailModel model = MessageDetailModel();
 
   @override
   bool get isSafeArea => false;
@@ -37,7 +45,7 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Mr Ha",
+            model.receiverName,
             style:
                 TextStyles.NORMAL_LABEL.getStyle.copyWith(color: Colors.white),
             textAlign: TextAlign.left,
@@ -45,7 +53,7 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
           SizedBox(
             height: 4,
           ),
-          Text("Truy cap 20 phut truoc",
+          Text(model.lastTimeOnline,
               style: TextStyles.CAPTION.getStyle.copyWith(color: Colors.white),
               textAlign: TextAlign.left),
         ],
@@ -87,27 +95,27 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
   }
 
   @override
+  void initState() {
+    super.initState();
+    model = MessageDetailModel();
+  }
+
+  @override
   Widget buildMobileLayout(BuildContext context) {
     return Container(
       color: backgroundColor,
       child: Stack(
         children: [
           ListView.builder(
-              itemCount: 9,
+              itemCount: model.contents.length,
               itemBuilder: (context, index) {
-                if (index % 3 == 0) {
-                  return OutgoingZaloMessageWidget(
-                      index % 2 == 0
-                          ? "testttt"
-                          : "Đây là mã vạch khai báo y tế..các cô chú có thể khai ở nhà rồi mình ra xét nghiệm cho nhanh ậ. Xin cảm ơn",
-                      "11:20");
+                var messageModel = model.contents[index];
+
+                if (messageModel.messageType == MessageType.OUTGOING_MESSAGE) {
+                  return OutgoingZaloMessageWidget(messageModel.content, messageModel.time);
                 }
 
-                return IncomingZaloMessageWidget(
-                    index % 2 == 0
-                        ? "testttt"
-                        : "Đây là mã vạch khai báo y tế..các cô chú có thể khai ở nhà rồi mình ra xét nghiệm cho nhanh ậ. Xin cảm ơn",
-                    "11:20");
+                return IncomingZaloMessageWidget(messageModel.content, messageModel.time);
               }),
           Positioned(
               bottom: 100,
@@ -136,29 +144,37 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       SizedBox(height: 12),
-                      TextField(
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(width: 1, color: gray1),
-                              ),
-                              hintText: "Change Name"),
-                          onChanged: (text) {
-                            print(text);
-                          },
-                        ),
+                      CustomTextField(
+                        onChanged: (text) {
+                          setState(() {
+                            model.receiverName = text;
+                          });
+                        },
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(width: 1, color: gray1),
+                            ),
+                            hintText: "Change Name"),
+                        maxLines: 1,
+                      ),
+
                       SizedBox(height: 12),
-                      TextField(
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(width: 1, color: gray1),
-                              ),
-                              hintText: "Change last time online"),
-                          onChanged: (text) {
-                            print(text);
-                          },
-                        ),
+                      CustomTextField(
+                        onChanged: (text) {
+                          setState(() {
+                            model.lastTimeOnline = text;
+                          });
+                        },
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(width: 1, color: gray1),
+                            ),
+                            hintText: "Change last time online"),
+                        maxLines: 1,
+                      ),
+
                       SizedBox(height: 12),
                       ListTile(
                         leading: new Icon(Icons.photo),
@@ -181,7 +197,9 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
                         },
                       ),
                       SizedBox(height: 12),
-                      ConfirmButton("done".toUpperCase(), onTapButton: null,)
+                      ConfirmButton("done".toUpperCase(), onTapButton: () {
+                        Navigator.pop(context);
+                      },)
                     ],
                   ),
                 ),
@@ -192,6 +210,11 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
   }
 
   Widget addNewMessage() {
+    return AddNewMessageWidget(onDone: (messageModel) {
+      setState(() {
+        this.model.contents.add(messageModel);
+      });
+    },);
     return Container(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + MediaQuery.of(context).viewInsets.bottom, left: 16, right: 16),
       child: SingleChildScrollView(

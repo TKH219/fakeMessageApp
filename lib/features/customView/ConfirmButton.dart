@@ -13,7 +13,11 @@ class ConfirmButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       child: InkWell(
-        onTap: () => onTapButton ?? Navigator.of(context).pop(),
+        onTap: () {
+          if (onTapButton!= null) {
+            this.onTapButton!();
+          }
+        },
         child: Container(
           height: 56,
           width: double.infinity,

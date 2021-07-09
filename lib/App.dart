@@ -9,11 +9,7 @@ import 'utils/StyleUtils.dart';
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-      },
-      child: MaterialApp(
+    return MaterialApp(
           onGenerateRoute: generateRouter,
           theme: ThemeData(
               primaryColor: blue_primary_600,
@@ -25,7 +21,7 @@ class App extends StatelessWidget {
                 bodyText1: TextStyles.BODY_1.getStyle,
                 caption: TextStyles.SUB_HEADING_2.getStyle,
               )),
-          home: HomeScreen()),
+          home: HomeScreen(),
     );
   }
 }
