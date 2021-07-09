@@ -22,7 +22,7 @@ class HomeScreen extends CoreScreenWidget {
 class HomeState extends CoreScreenState<HomeScreen> {
 
   int _currentIndex = 0;
-  DateTime clickedLastTime;
+  DateTime? clickedLastTime;
 
   final List<Widget> _screensTab = [
     SelectAppScreen(),
@@ -33,7 +33,7 @@ class HomeState extends CoreScreenState<HomeScreen> {
   bool get isSafeArea => false;
 
   @override
-  PreferredSizeWidget createAppBarContent(BuildContext context) {
+  PreferredSizeWidget? createAppBarContent(BuildContext context) {
     return null;
   }
 
@@ -72,7 +72,7 @@ class HomeState extends CoreScreenState<HomeScreen> {
 
   BottomNavigationBarItem _createBottomBarItem(String icon,
       [String text = "",
-        TabType type,
+        TabType? type,
         bool isCircle = false]) {
     double widthOfIcon = isCircle ? 25 : 20;
     double heightOfIcon = 25;
@@ -109,7 +109,7 @@ class HomeState extends CoreScreenState<HomeScreen> {
       clickedLastTime = DateTime.now();
     } else {
       var now = DateTime.now();
-      var diff = now.difference(clickedLastTime);
+      var diff = now.difference(clickedLastTime ?? now);
       clickedLastTime = now;
       isBack = diff.inMilliseconds < 3000;
     }

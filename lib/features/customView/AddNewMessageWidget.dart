@@ -63,7 +63,13 @@ class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
               ],
             ),
             SizedBox(height: 16,),
-            ConfirmButton("done".toUpperCase(), onTapButton: () => widget.onDone(model) ?? Navigator.of(context).pop(),)
+            ConfirmButton("done".toUpperCase(), onTapButton: () {
+             if (widget.onDone != null) {
+               widget.onDone!(model);
+             } else {
+               Navigator.of(context).pop();
+             }
+            })
           ],
         ),
       ),

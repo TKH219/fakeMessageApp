@@ -48,11 +48,11 @@ abstract class CoreScreenState<CS extends CoreScreenWidget> extends State<CS> {
   Widget buildMobileLayout(BuildContext context);
 
   @protected
-  PreferredSizeWidget createAppBarContent(BuildContext context) {
+  PreferredSizeWidget? createAppBarContent(BuildContext context) {
     return null;
   }
   @protected
-  Widget bottomNavigationBar(BuildContext context){
+  Widget? bottomNavigationBar(BuildContext context){
     return null;
   }
 

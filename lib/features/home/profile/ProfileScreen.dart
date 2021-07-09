@@ -70,8 +70,8 @@ class ProfileState extends CoreScreenState<ProfileScreen> {
           enablePullUp: false,
           header: MaterialClassicHeader(),
           footer: CustomFooter(
-            builder: (BuildContext context, LoadStatus mode) {
-              Widget body;
+            builder: (context, mode) {
+              Widget body = SizedBox.shrink();
               if (mode == LoadStatus.loading) {
                 body = CupertinoActivityIndicator();
               }

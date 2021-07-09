@@ -11,7 +11,7 @@ class InfoProfileItemWidget extends StatelessWidget {
 
   final String imagePath;
   final String title;
-  final Function onTapItem;
+  final Function()? onTapItem;
   final bool hasPadding;
 
   InfoProfileItemWidget(
