@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:fake_message_screen/PermissionService.dart';
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
 import 'package:fake_message_screen/features/customView/AddNewMessageWidget.dart';
@@ -12,6 +14,7 @@ import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'CustomView/IncomingZaloMessageWidget.dart';
 import 'CustomView/OutgoingZaloMessageWidget.dart';
@@ -27,6 +30,7 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
 
   MessageDetailModel model = MessageDetailModel();
 
+  late Widget avatarWidget;
   @override
   bool get isSafeArea => false;
 
@@ -96,6 +100,11 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
   void initState() {
     super.initState();
     model = MessageDetailModel();
+    avatarWidget = Image.network(
+      "https://picsum.photos/250?image=9",
+      height: 32,
+      width: 32,
+    );
   }
 
   @override
@@ -113,7 +122,7 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
                   return OutgoingZaloMessageWidget(messageModel.content, messageModel.time);
                 }
 
-                return IncomingZaloMessageWidget(messageModel.content, messageModel.time);
+                return IncomingZaloMessageWidget(messageModel.content, messageModel.time, avatarWidget: avatarWidget,);
               }),
           Positioned(
               bottom: 100,
@@ -190,8 +199,21 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
                       ListTile(
                         leading: new Icon(Icons.music_note),
                         title: new Text('Change receiver avatar'),
-                        onTap: () {
-                          Navigator.pop(context);
+                        onTap: () async {
+                          var isGranted = await PermissionService.getPhotoPermission(context);
+                          if (isGranted) {
+                            try {
+                              final ImagePicker _picker = ImagePicker();
+                              final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+                              setState(() {
+                                if (pickedFile != null) {
+                                  avatarWidget = Image.file(File(pickedFile.path), height: 32, width: 32, fit: BoxFit.cover, );
+                                }
+                              });
+                            } catch (e) {
+                              print(e.toString());
+                            }
+                          }
                         },
                       ),
                       SizedBox(height: 12),

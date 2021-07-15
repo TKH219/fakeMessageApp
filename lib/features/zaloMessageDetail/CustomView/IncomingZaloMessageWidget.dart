@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 class IncomingZaloMessageWidget extends StatelessWidget {
   final String message;
   final String datetime;
+  final Widget? avatarWidget;
 
-  IncomingZaloMessageWidget(this.message, this.datetime);
+  IncomingZaloMessageWidget(this.message, this.datetime, {this.avatarWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class IncomingZaloMessageWidget extends StatelessWidget {
             padding: EdgeInsets.only(left: 16, right: 4),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: Image.network(
+              child: this.avatarWidget ?? Image.network(
                 "https://picsum.photos/250?image=9",
                 height: 32,
                 width: 32,

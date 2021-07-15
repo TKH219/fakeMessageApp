@@ -20,6 +20,7 @@ dependencies:
   permission_handler: ^8.1.2
   fluttertoast: ^8.0.7
   json_serializable: ^4.1.3
+  image_picker: ^0.8.1+4
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -29,6 +30,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/svg/
+    - assets/images/png/
   fonts:
     - family: Source Sans Pro
       fonts:

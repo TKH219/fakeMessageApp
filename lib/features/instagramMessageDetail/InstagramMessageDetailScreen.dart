@@ -42,28 +42,60 @@ class InstagramMessageDetailState
       backwardsCompatibility: false,
       systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
       centerTitle: false,
-      leadingWidth: 12,
-      titleSpacing: 40,
-      title: Column(
+      automaticallyImplyLeading: false,
+      leading: null,
+      title: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            model.receiverName,
-            style:
-                TextStyles.NORMAL_LABEL.getStyle.copyWith(color: Colors.black),
-            textAlign: TextAlign.left,
+          InkWell(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              padding: EdgeInsets.only(right: 10),
+              child: Icon(Icons.arrow_back_ios_sharp, size: 24, color: Colors.black.withOpacity(0.8),),
+            ),
           ),
-          SizedBox(height: 4),
-          Text(model.lastTimeOnline,
-              style: TextStyles.CAPTION.getStyle.copyWith(color: gray_600),
-              textAlign: TextAlign.left),
+          Container(
+            padding: EdgeInsets.only(right: 12),
+            // decoration: BoxDecoration(
+            //   border: Border.all()
+            // ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: (this.model.receiverAvatar == null ||
+                      (this.model.receiverAvatar?.isEmpty == null))
+                  ? ImageUtils.getOriginalImagesSvg(IC_AVATAR_DEFAULT,
+                      width: 40, height: 40)
+                  : Image.network(
+                      this.model.receiverAvatar!,
+                      height: 40,
+                      width: 40,
+                    ),
+            ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                model.receiverName,
+                style: TextStyles.NORMAL_LABEL.getStyle.copyWith(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+                textAlign: TextAlign.left,
+              ),
+              Text(model.lastTimeOnline,
+                  style: TextStyles.CAPTION.getStyle
+                      .copyWith(color: gray_600, fontSize: 11),
+                  textAlign: TextAlign.left),
+            ],
+          ),
         ],
       ),
       actions: [
         IconButton(
           color: Colors.black,
-          icon: Icon(Icons.video_camera_back_rounded),
+          icon: ImageUtils.getImagesSvg(IC_IG_VIDEO, width: 22, height: 25, color: Colors.black),
           iconSize: 24,
           padding: EdgeInsets.only(left: 18),
           onPressed: () => Navigator.pop(context),
@@ -73,16 +105,18 @@ class InstagramMessageDetailState
           icon: ImageUtils.getImagesSvg(IC_IG_INFO,
               boxFit: BoxFit.fill, width: 24, height: 24, color: Colors.black),
           iconSize: 24,
-          padding: EdgeInsets.only(left: 18),
+          padding: EdgeInsets.only(left: 18, right: 24),
           onPressed: () => Navigator.pop(context),
         ),
       ],
-      leading: IconButton(
-        color: Colors.black,
-        icon: Icon(Icons.arrow_back_ios),
-        padding: EdgeInsets.only(left: 18),
-        onPressed: () => Navigator.pop(context),
-      ),
+      // leading: IconButton(
+      //   color: Colors.black,
+      //   icon: Icon(Icons.arrow_back_ios),
+      //     padding: EdgeInsets.only(left: 18),
+      //     onPressed: () {
+      //     print("test");
+      //       Navigator.of(context).pop();
+      //     }),
     );
   }
 

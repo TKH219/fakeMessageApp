@@ -98,7 +98,9 @@ class FunctionDialogState extends CoreScreenState<FunctionDialogWidget> {
   Widget addNewMessage() {
     return AddNewMessageWidget(onDone: (messageModel) {
       setState(() {
+        Navigator.pop(context);
         widget.model.contents.add(messageModel);
+        widget.onDone(widget.model);
       });
     },);
   }

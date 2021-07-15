@@ -15,13 +15,13 @@ extension AppSupportExtension on AppSupport {
   String get getImagePath {
     switch (this) {
       case AppSupport.INSTAGRAM:
-        return IC_CHANGE_PASSWORD;
+        return IC_IG_PNG;
       case AppSupport.MESSENGER:
-        return IC_CHANGE_PASSWORD;
+        return IC_MESSAGER_PNG;
       case AppSupport.ZALO:
-        return IC_CHANGE_PASSWORD;
+        return IC_ZALO_PNG;
       case AppSupport.IMESS:
-        return IC_CHANGE_PASSWORD;
+        return IC_IMESS_PNG;
       default:
         return "";
     }
@@ -111,11 +111,16 @@ class SelectAppState extends CoreScreenState<SelectAppScreen> {
           children: [
             Container(
               color: Colors.transparent,
-              padding: EdgeInsets.symmetric(horizontal: 28),
-              child: ImageUtils.getOriginalImagesSvg(appSupport.getImagePath,
-                  height: size - 56, width: size - 56),
+              padding: EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+              child: appSupport == AppSupport.ZALO || appSupport == AppSupport.MESSENGER
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: ImageUtils.getPngImage(appSupport.getImagePath,
+                          height: size - 56, width: size - 56),
+                    )
+                  : ImageUtils.getPngImage(appSupport.getImagePath,
+                      height: size - 56, width: size - 56),
             ),
-
             Text(appSupport.getTitle, style: TextStyles.BODY_2.getStyle.copyWith(color: Colors.black),)
           ],
         ),
