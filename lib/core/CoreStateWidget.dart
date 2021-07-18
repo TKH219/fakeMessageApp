@@ -1,6 +1,7 @@
 
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:flutter/material.dart';
+import 'package:screenshot/screenshot.dart';
 import 'CoreScreenWidget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -12,6 +13,8 @@ abstract class CoreScreenState<CS extends CoreScreenWidget> extends State<CS> {
   var isLargeScreen = false;
   var isSafeArea = true;
   var textScaleFactor = 1.0;
+
+  ScreenshotController screenshotController = ScreenshotController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +42,9 @@ abstract class CoreScreenState<CS extends CoreScreenWidget> extends State<CS> {
           data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
         ));
 
-    return Stack(
-        children: <Widget>[scaffold],
-        alignment: Alignment.center);
+    return Screenshot(
+        controller: screenshotController,
+        child: Stack(children: <Widget>[scaffold], alignment: Alignment.center));
   }
 
   @protected

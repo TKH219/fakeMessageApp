@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:fake_message_screen/PermissionService.dart';
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
@@ -15,6 +16,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 import 'CustomView/IncomingZaloMessageWidget.dart';
 import 'CustomView/OutgoingZaloMessageWidget.dart';
@@ -31,6 +34,7 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
   MessageDetailModel model = MessageDetailModel();
 
   late Widget avatarWidget;
+
   @override
   bool get isSafeArea => false;
 
@@ -110,32 +114,30 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
   @override
   Widget buildMobileLayout(BuildContext context) {
     return Container(
-      color: backgroundColor,
-      child: Stack(
-        children: [
-          ListView.builder(
-              itemCount: model.contents.length,
-              itemBuilder: (context, index) {
-                var messageModel = model.contents[index];
+        color: backgroundColor,
+        child: Stack(
+          children: [
+            ListView.builder(
+                itemCount: model.contents.length,
+                itemBuilder: (context, index) {
+                  var messageModel = model.contents[index];
 
-                if (messageModel.messageType == MessageType.OUTGOING_MESSAGE) {
-                  return OutgoingZaloMessageWidget(messageModel.content, messageModel.time);
-                }
+                  if (messageModel.messageType ==
+                      MessageType.OUTGOING_MESSAGE) {
+                    return OutgoingZaloMessageWidget(
+                        messageModel.content, messageModel.time);
+                  }
 
-                return IncomingZaloMessageWidget(messageModel.content, messageModel.time, avatarWidget: avatarWidget,);
-              }),
-          Positioned(
-              bottom: 100,
-              right: 16,
-              child: functionButton()),
-          Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: ZaloMessageInputWidget()),
-        ],
-      ),
-    );
+                  return IncomingZaloMessageWidget(
+                    messageModel.content,
+                    messageModel.time,
+                    avatarWidget: avatarWidget,
+                  );
+                }),
+            Positioned(bottom: 100, right: 16, child: functionButton()),
+            Positioned(bottom: 0, left: 0, right: 0, child: ZaloMessageInputWidget()),
+          ],
+        ));
   }
 
   Widget functionButton() {
@@ -214,6 +216,25 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
                               print(e.toString());
                             }
                           }
+                        },
+                      ),
+                      ListTile(
+                        leading: new Icon(Icons.music_note),
+                        title: new Text('Change receiver avatar'),
+                        onTap: () async {
+                          double pixelRatio = MediaQuery.of(context).devicePixelRatio;
+                          screenshotController
+                              .capture(
+                                  delay: Duration(milliseconds: 10),
+                                  pixelRatio: pixelRatio)
+                              .then((image) async {
+                                if (image != null)  {
+                                  await ImageGallerySaver.saveImage(
+                                      image,
+                                      quality: 60,
+                                      name: "hello");
+                                }
+                          });
                         },
                       ),
                       SizedBox(height: 12),
