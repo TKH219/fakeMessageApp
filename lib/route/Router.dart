@@ -1,4 +1,5 @@
 import 'package:fake_message_screen/features/home/HomeScreen.dart';
+import 'package:fake_message_screen/features/iMessageDetail/IMessageDetailScreen.dart';
 import 'package:fake_message_screen/features/instagramMessageDetail/InstagramMessageDetailScreen.dart';
 import 'package:fake_message_screen/features/zaloMessageDetail/ZaloMessagesDetailScreen.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,8 @@ Route<dynamic> generateRouter(RouteSettings setting) {
       return MaterialPageRoute(builder: (context) => ZaloMessagesDetailScreen());
     case InstagramMessageDetailRouter:
       return MaterialPageRoute(builder: (context) => InstagramMessageDetailScreen());
+    case IMessageDetailRouter:
+      return MaterialPageRoute(builder: (context) => IMessageDetailScreen());
     default:
       return MaterialPageRoute(builder: (context) => HomeScreen());
   }

@@ -27,7 +27,10 @@ class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
   @override
   Widget buildMobileLayout(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + MediaQuery.of(context).viewInsets.bottom, left: 16, right: 16),
+      padding: EdgeInsets.only(
+          left: 16, right: 16,
+          bottom: MediaQuery.of(context).padding.bottom + MediaQuery.of(context).viewInsets.bottom
+      ),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,

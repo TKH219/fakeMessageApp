@@ -56,9 +56,6 @@ class InstagramMessageDetailState
           ),
           Container(
             padding: EdgeInsets.only(right: 12),
-            // decoration: BoxDecoration(
-            //   border: Border.all()
-            // ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: (this.model.receiverAvatar == null ||
@@ -109,14 +106,6 @@ class InstagramMessageDetailState
           onPressed: () => Navigator.pop(context),
         ),
       ],
-      // leading: IconButton(
-      //   color: Colors.black,
-      //   icon: Icon(Icons.arrow_back_ios),
-      //     padding: EdgeInsets.only(left: 18),
-      //     onPressed: () {
-      //     print("test");
-      //       Navigator.of(context).pop();
-      //     }),
     );
   }
 
@@ -124,6 +113,7 @@ class InstagramMessageDetailState
   Widget buildMobileLayout(BuildContext context) {
     return Container(
       color: Colors.white,
+      padding: EdgeInsets.symmetric(vertical: 16),
       child: Stack(
         children: [
           ListView.separated(

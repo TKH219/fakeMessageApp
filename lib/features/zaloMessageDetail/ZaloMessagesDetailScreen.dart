@@ -115,6 +115,7 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
   Widget buildMobileLayout(BuildContext context) {
     return Container(
         color: backgroundColor,
+        padding: EdgeInsets.symmetric(vertical: 16),
         child: Stack(
           children: [
             ListView.builder(
@@ -164,6 +165,8 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(width: 1, color: gray1),
                             ),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                            hintStyle: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray5),
                             hintText: "Change Name"),
                         maxLines: 1,
                       ),
@@ -180,63 +183,15 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(width: 1, color: gray1),
                             ),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                            hintStyle: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray5),
                             hintText: "Change last time online"),
                         maxLines: 1,
                       ),
-
                       SizedBox(height: 12),
-                      ListTile(
-                        leading: new Icon(Icons.photo),
-                        title: new Text('Add new message'),
-                        onTap: () {
-                          Navigator.pop(context);
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return addNewMessage();
-                              });
-                        },
-                      ),
-                      SizedBox(height: 12),
-                      ListTile(
-                        leading: new Icon(Icons.music_note),
-                        title: new Text('Change receiver avatar'),
-                        onTap: () async {
-                          var isGranted = await PermissionService.getPhotoPermission(context);
-                          if (isGranted) {
-                            try {
-                              final ImagePicker _picker = ImagePicker();
-                              final pickedFile = await _picker.getImage(source: ImageSource.gallery);
-                              setState(() {
-                                if (pickedFile != null) {
-                                  avatarWidget = Image.file(File(pickedFile.path), height: 32, width: 32, fit: BoxFit.cover, );
-                                }
-                              });
-                            } catch (e) {
-                              print(e.toString());
-                            }
-                          }
-                        },
-                      ),
-                      ListTile(
-                        leading: new Icon(Icons.music_note),
-                        title: new Text('Change receiver avatar'),
-                        onTap: () async {
-                          double pixelRatio = MediaQuery.of(context).devicePixelRatio;
-                          screenshotController
-                              .capture(
-                                  delay: Duration(milliseconds: 10),
-                                  pixelRatio: pixelRatio)
-                              .then((image) async {
-                                if (image != null)  {
-                                  await ImageGallerySaver.saveImage(
-                                      image,
-                                      quality: 60,
-                                      name: "hello");
-                                }
-                          });
-                        },
-                      ),
+                      changeReceiverAvatar(),
+                      saveScreenshot(),
+                      addNewMessageWidget(),
                       SizedBox(height: 12),
                       ConfirmButton("done".toUpperCase(), onTapButton: () {
                         Navigator.pop(context);
@@ -250,11 +205,104 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
     );
   }
 
-  Widget addNewMessage() {
-    return AddNewMessageWidget(onDone: (messageModel) {
-      setState(() {
-        this.model.contents.add(messageModel);
-      });
-    },);
+  Widget changeReceiverAvatar() {
+    return ListTile(
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Icon(Icons.add_a_photo_rounded, size: 24, color: gray9,),
+          SizedBox(width: 8),
+          Text('Change receiver avatar', style: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray9),),
+        ],
+      ),
+      contentPadding: EdgeInsets.symmetric(vertical: 0),
+      onTap: () async {
+        var isGranted = await PermissionService.getPhotoPermission(context);
+        if (isGranted) {
+          try {
+            final ImagePicker _picker = ImagePicker();
+            final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+            setState(() {
+              if (pickedFile != null) {
+                avatarWidget = Image.file(
+                  File(pickedFile.path),
+                  height: 32,
+                  width: 32,
+                  fit: BoxFit.cover,
+                );
+              }
+            });
+          } catch (e) {
+            print(e.toString());
+          }
+        }
+      }
+    );
+  }
+
+  Widget saveScreenshot() {
+    return ListTile(
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Icon(Icons.photo_camera_rounded, size: 24, color: gray9,),
+          SizedBox(width: 8),
+          Text('Save screenshot to photos', style: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray9),),
+        ],
+      ),
+      contentPadding: EdgeInsets.symmetric(vertical: 0),
+      onTap: () async {
+        double pixelRatio = MediaQuery.of(context).devicePixelRatio;
+        screenshotController
+            .capture(
+            delay: Duration(milliseconds: 10),
+            pixelRatio: pixelRatio)
+            .then((image) async {
+          if (image != null)  {
+            await ImageGallerySaver.saveImage(
+                image,
+                quality: 60,
+                name: "hello");
+          }
+        });
+      },
+    );
+  }
+
+  Widget addNewMessageWidget() {
+    return ListTile(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.add_circle_rounded,
+              size: 24,
+              color: gray9,
+            ),
+            SizedBox(width: 8),
+            Text(
+              'Add new message',
+              style: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray9),
+            ),
+          ],
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 0),
+        onTap: () {
+          Navigator.pop(context);
+          showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return AddNewMessageWidget(
+                  onDone: (messageModel) {
+                    setState(() {
+                      this.model.contents.add(messageModel);
+                    });
+                  },
+                );
+              });
+        });
   }
 }

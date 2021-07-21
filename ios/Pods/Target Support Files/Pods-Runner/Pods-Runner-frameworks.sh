@@ -180,6 +180,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/fluttertoast/fluttertoast.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/image_gallery_saver/image_gallery_saver.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/image_picker/image_picker.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/in_app_purchase_ios/in_app_purchase_ios.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/path_provider/path_provider.framework"
 fi
 if [[ "$CONFIGURATION" == "Profile" ]]; then
@@ -188,6 +189,7 @@ if [[ "$CONFIGURATION" == "Profile" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/fluttertoast/fluttertoast.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/image_gallery_saver/image_gallery_saver.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/image_picker/image_picker.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/in_app_purchase_ios/in_app_purchase_ios.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/path_provider/path_provider.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
@@ -196,6 +198,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/fluttertoast/fluttertoast.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/image_gallery_saver/image_gallery_saver.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/image_picker/image_picker.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/in_app_purchase_ios/in_app_purchase_ios.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/path_provider/path_provider.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then

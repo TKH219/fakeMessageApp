@@ -94,6 +94,7 @@ class SelectAppState extends CoreScreenState<SelectAppScreen> {
         onTap: () {
           switch (appSupport) {
             case AppSupport.IMESS:
+              Navigator.of(context).pushNamed(IMessageDetailRouter);
               break;
             case AppSupport.INSTAGRAM:
               Navigator.of(context).pushNamed(InstagramMessageDetailRouter);
