@@ -115,7 +115,7 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
   Widget buildMobileLayout(BuildContext context) {
     return Container(
         color: backgroundColor,
-        padding: EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.only(top: 16),
         child: Stack(
           children: [
             ListView.builder(
@@ -125,15 +125,10 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
 
                   if (messageModel.messageType ==
                       MessageType.OUTGOING_MESSAGE) {
-                    return OutgoingZaloMessageWidget(
-                        messageModel.content, messageModel.time);
+                    return OutgoingZaloMessageWidget(messageModel);
                   }
 
-                  return IncomingZaloMessageWidget(
-                    messageModel.content,
-                    messageModel.time,
-                    avatarWidget: avatarWidget,
-                  );
+                  return IncomingZaloMessageWidget(messageModel, avatarWidget: avatarWidget);
                 }),
             Positioned(bottom: 100, right: 16, child: functionButton()),
             Positioned(bottom: 0, left: 0, right: 0, child: ZaloMessageInputWidget()),

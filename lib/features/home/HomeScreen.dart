@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
 import 'package:fake_message_screen/features/home/selectApp/SelectAppScreen.dart';
@@ -8,6 +10,7 @@ import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 import 'profile/ProfileScreen.dart';
 
@@ -24,10 +27,26 @@ class HomeState extends CoreScreenState<HomeScreen> {
   int _currentIndex = 0;
   DateTime? clickedLastTime;
 
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
+
   final List<Widget> _screensTab = [
     SelectAppScreen(),
     ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    final Stream<List<PurchaseDetails>> purchaseUpdated = InAppPurchase.instance.purchaseStream;
+    _subscription = purchaseUpdated.listen((purchaseDetailsList) {
+      _listenToPurchaseUpdated(purchaseDetailsList);
+    }, onDone: () {
+      _subscription.cancel();
+    }, onError: (error) {
+      print("Error");
+      // handle error here.
+    });
+  }
 
   @override
   bool get isSafeArea => false;
@@ -117,5 +136,34 @@ class HomeState extends CoreScreenState<HomeScreen> {
       showToastMessage("Press twice to back", ToastGravity.BOTTOM);
     }
     return isBack;
+  }
+
+  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+        // _showPendingUI();
+      } else {
+        if (purchaseDetails.status == PurchaseStatus.error) {
+          // _handleError(purchaseDetails.error!);
+        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+            purchaseDetails.status == PurchaseStatus.restored) {
+          // bool valid = await _verifyPurchase(purchaseDetails);
+          // if (valid) {
+            // _deliverProduct(purchaseDetails);
+          // } else {
+            // _handleInvalidPurchase(purchaseDetails);
+          // }
+        }
+        if (purchaseDetails.pendingCompletePurchase) {
+          await InAppPurchase.instance.completePurchase(purchaseDetails);
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 }

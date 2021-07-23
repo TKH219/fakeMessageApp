@@ -1,13 +1,13 @@
+import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageItemModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OutgoingZaloMessageWidget extends StatelessWidget {
-  final String message;
-  final String datetime;
+  final MessageItemModel model;
 
-  OutgoingZaloMessageWidget(this.message, this.datetime);
+  OutgoingZaloMessageWidget(this.model);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class OutgoingZaloMessageWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    this.message,
+                    this.model.content,
                     style: TextStyles.BODY_2.getStyle.copyWith(fontSize: 14),
                     maxLines: 9,
                     overflow: TextOverflow.ellipsis,
@@ -39,12 +39,13 @@ class OutgoingZaloMessageWidget extends StatelessWidget {
                   SizedBox(
                     height: 6,
                   ),
-                  Text(
-                    this.datetime,
-                    style: TextStyles.CAPTION.getStyle.copyWith(fontSize: 10),
-                    textAlign: TextAlign.left,
-                    maxLines: 1,
-                  ),
+                  if (this.model.time.isNotEmpty)
+                    Text(
+                      this.model.time,
+                      style: TextStyles.CAPTION.getStyle.copyWith(fontSize: 10),
+                      textAlign: TextAlign.left,
+                      maxLines: 1,
+                    ),
                 ],
               ),
             ),

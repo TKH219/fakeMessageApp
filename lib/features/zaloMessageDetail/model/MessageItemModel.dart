@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:fake_message_screen/utils/Constants.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -7,9 +9,10 @@ class MessageItemModel extends Object {
   String content;
   String time;
   MessageType messageType;
+  File? imageFile;
 
   MessageItemModel(
       {this.content = "",
       this.time = "",
-      this.messageType = MessageType.INCOMING_MESSAGE});
+      this.messageType = MessageType.INCOMING_MESSAGE, this.imageFile});
 }
