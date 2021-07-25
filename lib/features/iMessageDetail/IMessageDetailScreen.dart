@@ -5,11 +5,13 @@ import 'package:fake_message_screen/core/CoreStateWidget.dart';
 import 'package:fake_message_screen/customBubbleChat/BubbleType.dart';
 import 'package:fake_message_screen/customBubbleChat/ChatBubble.dart';
 import 'package:fake_message_screen/customBubbleChat/clippers/ChatBubbleClipper3.dart';
+import 'package:fake_message_screen/customBubbleChat/clippers/ChatBubbleClipper5.dart';
 import 'package:fake_message_screen/features/customView/AddNewMessageWidget.dart';
 import 'package:fake_message_screen/features/customView/ConfirmButton.dart';
 import 'package:fake_message_screen/features/customView/CustomTextField.dart';
 import 'package:fake_message_screen/features/customView/FunctionButton.dart';
 import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageDetailModel.dart';
+import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageItemModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/Constants.dart';
 import 'package:fake_message_screen/utils/ImageAssetsConstant.dart';
@@ -37,77 +39,56 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
   @override
   void initState() {
     super.initState();
-    avatarWidget = ImageUtils.getOriginalImagesSvg(IC_AVATAR_DEFAULT,
-        width: 56, height: 56);
+    avatarWidget = ImageUtils.getImagesSvg(IC_AVATAR_DEFAULT_IMESS,
+        width: 56, height: 56, color: gray5);
   }
 
   @override
   bool get isSafeArea => false;
 
   @override
-  PreferredSizeWidget createAppBarContent(BuildContext context) {
-    return PreferredSize(
-        // preferredSize: Size(double.infinity, kToolbarHeight),
-        preferredSize:
-            Size.fromHeight(100 + MediaQuery.of(context).padding.top),
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                  color: primaryColor,
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: 24,
-                  ),
-                  onPressed: () {
-                    print("pop");
-                    Navigator.pop(context);
-                  }),
-              numberNotification(),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).padding.top),
-                    avatarWidget,
-                    Text(
-                      "model.receiverName",
-                      style: TextStyles.NORMAL_LABEL.getStyle
-                          .copyWith(color: Colors.red),
-                      textAlign: TextAlign.left,
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ));
+  PreferredSizeWidget? createAppBarContent(BuildContext context) {
+    return null;
   }
 
   @override
   Widget buildMobileLayout(BuildContext context) {
     return Container(
-        color: backgroundColor,
+        color: Colors.white,
         child: Stack(
           children: [
             ListView.builder(
                 itemCount: model.contents.length,
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 itemBuilder: (context, index) {
                   var messageModel = model.contents[index];
+                  int nextIndex = index + 1;
+                  bool shouldBorderCorner =
+                      (index != model.contents.length - 1 ||
+                          (nextIndex < model.contents.length &&
+                              model.contents[nextIndex].messageType ==
+                                  model.contents[index].messageType));
                   if (messageModel.messageType ==
                       MessageType.OUTGOING_MESSAGE) {
-                    return getSenderView(ChatBubbleClipper3(BubbleType.sendBubble), context);
+                    return getSenderView(
+                        shouldBorderCorner
+                            ? ChatBubbleClipper5(BubbleType.sendBubble)
+                            : ChatBubbleClipper3(BubbleType.sendBubble),
+                        context,
+                        messageModel);
                   }
 
-                  return getReceiverView(ChatBubbleClipper3(BubbleType.receiverBubble), context);
+                  return getReceiverView(
+                      shouldBorderCorner
+                          ? ChatBubbleClipper5(BubbleType.receiverBubble)
+                          : ChatBubbleClipper3(BubbleType.receiverBubble),
+                      context,
+                      messageModel);
                 }),
-
+            Positioned(top: 0, left: 0, right: 0, child: appBarContent()),
             Positioned(bottom: 100, right: 16, child: functionButton()),
-            Positioned(bottom: 0, left: 0, right: 0, child: IMessageInputField()),
+            Positioned(
+                bottom: 0, left: 0, right: 0, child: IMessageInputField()),
           ],
         ));
   }
@@ -244,6 +225,73 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
     );
   }
 
+  Widget appBarContent() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.95),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: Offset(0.0, -2))
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+              color: primaryColor,
+              padding: EdgeInsets.only(top: 26),
+              alignment: Alignment.center,
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: 24,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          // numberNotification(),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(right: 48),
+              padding: EdgeInsets.only(bottom: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: MediaQuery.of(context).padding.top),
+                  avatarWidget,
+                  SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${model.receiverName}",
+                        style: TextStyles.NORMAL_LABEL.getStyle
+                            .copyWith(color: black_0103),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        ">",
+                        style: TextStyles.NORMAL_LABEL.getStyle
+                            .copyWith(color: gray7),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget numberNotification() {
     return Container(
       width: 24,
@@ -259,35 +307,39 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
     );
   }
 
-  getSenderView(CustomClipper<Path> clipper, BuildContext context) =>
+  getSenderView(CustomClipper<Path> clipper, BuildContext context,
+          MessageItemModel model) =>
       ChatBubble(
         clipper,
         alignment: Alignment.topRight,
-        margin: EdgeInsets.only(top: 20),
-        backGroundColor: Colors.blue,
+        elevation: 0,
+        margin: EdgeInsets.only(top: 4),
+        backGroundColor: blue_7cf5,
         child: Container(
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.7,
           ),
           child: Text(
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            style: TextStyle(color: Colors.white),
+            model.content,
+            style: TextStyle(color: white_FDFF),
           ),
         ),
       );
 
-  getReceiverView(CustomClipper<Path> clipper, BuildContext context) =>
+  getReceiverView(CustomClipper<Path> clipper, BuildContext context,
+          MessageItemModel model) =>
       ChatBubble(
         clipper,
-        backGroundColor: Color(0xffE7E7ED),
-        margin: EdgeInsets.only(top: 20),
+        backGroundColor: gray_e9eb,
+        elevation: 0,
+        margin: EdgeInsets.only(top: 4),
         child: Container(
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.7,
           ),
           child: Text(
-            "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
-            style: TextStyle(color: Colors.black),
+            model.content,
+            style: TextStyle(color: black_0103),
           ),
         ),
       );

@@ -13,6 +13,7 @@ class IncomingZaloMessageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: (this.model.imageFile == null) ? EdgeInsets.symmetric(vertical: 2) : EdgeInsets.only(bottom: 12, top: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -63,7 +64,6 @@ class IncomingZaloMessageWidget extends StatelessWidget {
                       ),
                     )
                   : Container(
-                      // padding: EdgeInsets.only(left: 12, right: 12, bottom: 4, top: 8),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.file(

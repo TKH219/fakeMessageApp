@@ -10,47 +10,46 @@ class IMessageInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: gray_8b8b, borderRadius: BorderRadius.circular(40)),
-      margin: EdgeInsets.symmetric(horizontal: 16),
+          color: Colors.white.withOpacity(0.9),
+          border: Border(top: BorderSide(color: gray50, width: 0.75))),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).padding.bottom,
+        top: 6
+      ),
       child: Row(children: <Widget>[
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: blue_primary_500,
-          ),
-          margin: EdgeInsets.symmetric(horizontal: 8),
-          child: IconButton(
-            color: Colors.white,
-            padding: EdgeInsets.all(4),
-            icon: Icon(Icons.photo_camera_rounded),
-            iconSize: 24,
-            onPressed: () => Navigator.pop(context),
-          ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: ImageUtils.getImagesSvg(IC_CAMERA, color: gray_9999, height: 24, width: 24),
         ),
-        Expanded(
-            child: Text(
-          'Message...',
-          style:
-              TextStyles.BODY_1.getStyle.copyWith(color: gray3, fontSize: 16),
-        )),
-        IconButton(
-          color: gray5,
-          icon: ImageUtils.getImagesSvg(IC_IG_MICRO,
-              color: gray5, width: 25, height: 25),
-          iconSize: 25,
-          padding: EdgeInsets.only(left: 12),
-          onPressed: () => Navigator.pop(context),
-        ),
-        IconButton(
-          color: gray5,
-          icon: ImageUtils.getImagesSvg(IC_IG_IMAGE,
-              color: gray5, width: 25, height: 25),
-          iconSize: 25,
-          onPressed: () => Navigator.pop(context),
-        ),
+        ImageUtils.getPngImage(IC_APP_STORE_PNG, height: 24, width: 32),
+        SizedBox(width: 16),
+        Expanded(child: iMessageInput()),
+        SizedBox(width: 16),
       ]),
+    );
+  }
+
+  Widget iMessageInput() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+      decoration: BoxDecoration(
+          border: Border.all(color: gray2),
+          borderRadius: BorderRadius.circular(18.0)),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(width: 4),
+          Expanded(
+              child: Text('iMessage',
+                  style: TextStyles.BODY_2.getStyle
+                      .copyWith(color: gray_b3c8, fontSize: 18))),
+          ImageUtils.getImagesSvg(IC_CAMERA,
+              color: gray5, height: 24, width: 24),
+          SizedBox(width: 4),
+        ],
+      ),
     );
   }
 }

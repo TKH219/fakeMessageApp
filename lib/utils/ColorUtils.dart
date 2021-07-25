@@ -6,10 +6,18 @@ const primaryLightColor = Color(0xff4792EB);
 const primaryLight3Color = Color(0xffEBF1F9);
 const primaryDarkColor = Color(0xff2268c3);
 
+// Blue
 const blue_primary_400 = Color(0xff429DF2);
 const blue_primary_600 = Color(0xff264974);
 const blue_primary_200 = Color(0xFFD5EFFC);
 const blue_primary_500 = Color(0xff4A78DD);
+const blue_7cf5 = Color(0xff2F7CF5);
+
+// Black
+const black_0103 = Color(0xff010103);
+
+// White
+const white_FDFF = Color(0xffF0FDFF);
 
 // Gray
 const gray0 = Color(0xffF8F9FA);
@@ -26,7 +34,9 @@ const gray_efef = Color(0xffEFEFEF);
 const gray50 = Color(0xffEEEFF2);
 const gray_600 = Color(0xff909090);
 const gray_8b8b = Color(0xff8B8B8B);
-
+const gray_e9eb = Color(0xffE9E9EB);
+const gray_b3c8 = Color(0xffA2B3C8);
+const gray_9999 = Color(0xff999999);
 
 const purple_400 = Color(0xff853FBD);
 

@@ -1,3 +1,4 @@
+import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -16,7 +17,6 @@ class ImageUtils {
         fit: scaleStyle,
         width: width,
         height: height,
-
       );
     }
   }
