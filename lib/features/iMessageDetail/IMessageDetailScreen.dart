@@ -6,10 +6,13 @@ import 'package:fake_message_screen/customBubbleChat/BubbleType.dart';
 import 'package:fake_message_screen/customBubbleChat/ChatBubble.dart';
 import 'package:fake_message_screen/customBubbleChat/clippers/ChatBubbleClipper3.dart';
 import 'package:fake_message_screen/customBubbleChat/clippers/ChatBubbleClipper5.dart';
+import 'package:fake_message_screen/features/customView/AddNewMessageButton.dart';
 import 'package:fake_message_screen/features/customView/AddNewMessageWidget.dart';
+import 'package:fake_message_screen/features/customView/ChangeAvatarWidget.dart';
 import 'package:fake_message_screen/features/customView/ConfirmButton.dart';
 import 'package:fake_message_screen/features/customView/CustomTextField.dart';
 import 'package:fake_message_screen/features/customView/FunctionButton.dart';
+import 'package:fake_message_screen/features/customView/SaveScreenshotWidget.dart';
 import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageDetailModel.dart';
 import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageItemModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
@@ -35,6 +38,7 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
   MessageDetailModel model = MessageDetailModel();
 
   late Widget avatarWidget;
+  bool showFunctionButton = true;
 
   @override
   void initState() {
@@ -58,42 +62,63 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
         child: Stack(
           children: [
             ListView.builder(
-                itemCount: model.contents.length,
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                itemCount: model.contents.length + 1,
                 itemBuilder: (context, index) {
-                  var messageModel = model.contents[index];
-                  int nextIndex = index + 1;
-                  bool shouldBorderCorner =
-                      (index != model.contents.length - 1 ||
+                  if (index == 0) return SizedBox(height: MediaQuery.of(context).padding.top + 96);
+                  var originalIndex = index - 1;
+                  var messageModel = model.contents[originalIndex];
+                  int nextIndex = originalIndex + 1;
+                  bool showImageBubble =
+                      (nextIndex == model.contents.length ||
                           (nextIndex < model.contents.length &&
-                              model.contents[nextIndex].messageType ==
-                                  model.contents[index].messageType));
-                  if (messageModel.messageType ==
-                      MessageType.OUTGOING_MESSAGE) {
-                    return getSenderView(
-                        shouldBorderCorner
-                            ? ChatBubbleClipper5(BubbleType.sendBubble)
-                            : ChatBubbleClipper3(BubbleType.sendBubble),
-                        context,
-                        messageModel);
+                              model.contents[nextIndex].messageType !=
+                                  model.contents[originalIndex].messageType));
+                  if (messageModel.messageType == MessageType.OUTGOING_MESSAGE) {
+                    return Padding(
+                      padding: EdgeInsets.only(right: showImageBubble ? 6 : 16, top: 2),
+                      child: getSenderView(
+                          showImageBubble
+                              ? ChatBubbleClipper3(BubbleType.sendBubble)
+                              : ChatBubbleClipper5(BubbleType.sendBubble),
+                          context,
+                          messageModel),
+                    );
                   }
 
-                  return getReceiverView(
-                      shouldBorderCorner
-                          ? ChatBubbleClipper5(BubbleType.receiverBubble)
-                          : ChatBubbleClipper3(BubbleType.receiverBubble),
-                      context,
-                      messageModel);
+                  return Padding(
+                    padding: EdgeInsets.only(left: showImageBubble ? 6 : 16, top: 2),
+                    child: getReceiverView(
+                        showImageBubble
+                            ? ChatBubbleClipper3(BubbleType.receiverBubble)
+                            : ChatBubbleClipper5(BubbleType.receiverBubble),
+                        context,
+                        messageModel),
+                  );
                 }),
             Positioned(top: 0, left: 0, right: 0, child: appBarContent()),
-            Positioned(bottom: 100, right: 16, child: functionButton()),
-            Positioned(
-                bottom: 0, left: 0, right: 0, child: IMessageInputField()),
+            Positioned(bottom: 120, right: 16, child: Visibility(
+              visible: showFunctionButton,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  AddNewMessageButton((model) {
+                    setState(() {
+                      this.model.contents.add(model);
+                    });
+                  }),
+                  SizedBox(width: 16),
+                  functionButtonWidget(),
+                ],
+              ),
+            )),
+            Positioned(bottom: 0, left: 0, right: 0, child: IMessageInputField()),
           ],
         ));
   }
 
-  Widget functionButton() {
+  Widget functionButtonWidget() {
     return FunctionButton(
       onTap: () {
         showModalBottomSheet(
@@ -140,62 +165,17 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
                         maxLines: 1,
                       ),
                       SizedBox(height: 12),
-                      ListTile(
-                        leading: new Icon(Icons.photo),
-                        title: new Text('Add new message'),
-                        onTap: () {
-                          Navigator.pop(context);
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return addNewMessage();
-                              });
+                      changeReceiverAvatar(),
+                      SaveScreenshotWidget(
+                        this.screenshotController,
+                        onBegin: () {
+                          setState(() {
+                            showFunctionButton = false;
+                          });
                         },
-                      ),
-                      SizedBox(height: 12),
-                      ListTile(
-                        leading: new Icon(Icons.music_note),
-                        title: new Text('Change receiver avatar'),
-                        onTap: () async {
-                          var isGranted =
-                              await PermissionService.getPhotoPermission(
-                                  context);
-                          if (isGranted) {
-                            try {
-                              final ImagePicker _picker = ImagePicker();
-                              final pickedFile = await _picker.getImage(
-                                  source: ImageSource.gallery);
-                              setState(() {
-                                if (pickedFile != null) {
-                                  avatarWidget = Image.file(
-                                    File(pickedFile.path),
-                                    height: 32,
-                                    width: 32,
-                                    fit: BoxFit.cover,
-                                  );
-                                }
-                              });
-                            } catch (e) {
-                              print(e.toString());
-                            }
-                          }
-                        },
-                      ),
-                      ListTile(
-                        leading: new Icon(Icons.music_note),
-                        title: new Text('Change receiver avatar'),
-                        onTap: () async {
-                          double pixelRatio =
-                              MediaQuery.of(context).devicePixelRatio;
-                          screenshotController
-                              .capture(
-                                  delay: Duration(milliseconds: 10),
-                                  pixelRatio: pixelRatio)
-                              .then((image) async {
-                            if (image != null) {
-                              await ImageGallerySaver.saveImage(image,
-                                  quality: 60, name: "hello");
-                            }
+                        onEnd: () {
+                          setState(() {
+                            showFunctionButton = true;
                           });
                         },
                       ),
@@ -215,26 +195,16 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
     );
   }
 
-  Widget addNewMessage() {
-    return AddNewMessageWidget(
-      onDone: (messageModel) {
-        setState(() {
-          this.model.contents.add(messageModel);
-        });
-      },
-    );
-  }
-
   Widget appBarContent() {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.95),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              spreadRadius: 2,
-              blurRadius: 4,
-              offset: Offset(0.0, -2))
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: Offset(0.0, -1))
         ],
       ),
       child: Row(
@@ -264,7 +234,9 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(height: MediaQuery.of(context).padding.top),
-                  avatarWidget,
+                  ClipRRect(
+                      borderRadius: BorderRadius.circular(28),
+                      child: avatarWidget),
                   SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -307,13 +279,24 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
     );
   }
 
-  getSenderView(CustomClipper<Path> clipper, BuildContext context,
-          MessageItemModel model) =>
+  Widget changeReceiverAvatar() {
+    return ChangeAvatarWidget((file) {
+      setState(() {
+        avatarWidget = Image.file(
+          file,
+          height: 56,
+          width: 56,
+          fit: BoxFit.cover,
+        );
+      });
+    });
+  }
+
+  Widget getSenderView(CustomClipper<Path> clipper, BuildContext context, MessageItemModel model) =>
       ChatBubble(
         clipper,
         alignment: Alignment.topRight,
         elevation: 0,
-        margin: EdgeInsets.only(top: 4),
         backGroundColor: blue_7cf5,
         child: Container(
           constraints: BoxConstraints(
@@ -321,25 +304,23 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
           ),
           child: Text(
             model.content,
-            style: TextStyle(color: white_FDFF),
+            style: TextStyles.BODY_1.getStyle.copyWith(color: white_FDFF),
           ),
         ),
       );
 
-  getReceiverView(CustomClipper<Path> clipper, BuildContext context,
-          MessageItemModel model) =>
+  Widget getReceiverView(CustomClipper<Path> clipper, BuildContext context, MessageItemModel model) =>
       ChatBubble(
         clipper,
         backGroundColor: gray_e9eb,
         elevation: 0,
-        margin: EdgeInsets.only(top: 4),
         child: Container(
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.7,
           ),
           child: Text(
             model.content,
-            style: TextStyle(color: black_0103),
+            style: TextStyles.BODY_1.getStyle.copyWith(color: black_0103, fontSize: 16),
           ),
         ),
       );

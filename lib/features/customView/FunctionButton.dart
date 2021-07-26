@@ -19,7 +19,7 @@ class FunctionButton extends StatelessWidget {
           alignment: Alignment.center,
           width: 56,
           height: 56,
-          child: Icon(Icons.add, color: Colors.white, size: 24),
+          child: Icon(Icons.edit, color: Colors.white, size: 24),
         ),
       ),
     );

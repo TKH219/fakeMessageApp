@@ -7,6 +7,8 @@ const String IC_IG_PNG = '${ASSETS_ICONS_PNG_PATH}ic_instagram.png';
 const String IC_MESSAGER_PNG = '${ASSETS_ICONS_PNG_PATH}ic_messager.png';
 const String IC_IMESS_PNG = '${ASSETS_ICONS_PNG_PATH}ic_imess.png';
 const String IC_APP_STORE_PNG = '${ASSETS_ICONS_PNG_PATH}ic_appstore.png';
+const String IC_APP_STORE_BLACK_AND_WHITE_PNG = '${ASSETS_ICONS_PNG_PATH}ic_app_store_black_white.png';
+const String IC_RECORD_PNG = '${ASSETS_ICONS_PNG_PATH}ic_record.png';
 
 // MARK: SVG
 const String IC_CALL = '${ASSETS_ICONS_SVG_PATH}ic_call.svg';

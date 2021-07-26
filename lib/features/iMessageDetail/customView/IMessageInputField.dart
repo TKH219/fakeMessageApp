@@ -11,17 +11,25 @@ class IMessageInputField extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.9),
-          border: Border(top: BorderSide(color: gray50, width: 0.75))),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: Offset(0.0, 1))
+        ],
+          // border: Border(top: BorderSide(color: gray50, width: 0.75))
+      ),
       padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).padding.bottom,
-        top: 6
+        bottom: MediaQuery.of(context).padding.bottom + 20,
+        top: 8
       ),
       child: Row(children: <Widget>[
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: ImageUtils.getImagesSvg(IC_CAMERA, color: gray_9999, height: 24, width: 24),
         ),
-        ImageUtils.getPngImage(IC_APP_STORE_PNG, height: 24, width: 32),
+        ImageUtils.getPngImage(IC_APP_STORE_BLACK_AND_WHITE_PNG, height: 24, width: 32),
         SizedBox(width: 16),
         Expanded(child: iMessageInput()),
         SizedBox(width: 16),
@@ -33,7 +41,7 @@ class IMessageInputField extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
       decoration: BoxDecoration(
-          border: Border.all(color: gray2),
+          border: Border.all(color: gray4),
           borderRadius: BorderRadius.circular(18.0)),
       child: Row(
         mainAxisSize: MainAxisSize.max,
@@ -44,9 +52,8 @@ class IMessageInputField extends StatelessWidget {
           Expanded(
               child: Text('iMessage',
                   style: TextStyles.BODY_2.getStyle
-                      .copyWith(color: gray_b3c8, fontSize: 18))),
-          ImageUtils.getImagesSvg(IC_CAMERA,
-              color: gray5, height: 24, width: 24),
+                      .copyWith(color: gray5, fontSize: 18))),
+          ImageUtils.getPngImage(IC_RECORD_PNG, width: 20, height: 20),
           SizedBox(width: 4),
         ],
       ),

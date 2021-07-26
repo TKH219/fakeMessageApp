@@ -258,7 +258,7 @@ class ZaloMessagesDetailState extends CoreScreenState<ZaloMessagesDetailScreen> 
           if (image != null)  {
             await ImageGallerySaver.saveImage(
                 image,
-                quality: 60,
+                quality: 100,
                 name: "hello");
           }
         });
