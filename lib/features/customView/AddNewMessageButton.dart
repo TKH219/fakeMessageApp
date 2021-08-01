@@ -8,8 +8,8 @@ import 'AddNewMessageWidget.dart';
 class AddNewMessageButton extends StatelessWidget {
 
   final Function(MessageItemModel) onAddNewMessage;
-
-  AddNewMessageButton(this.onAddNewMessage);
+  final bool haveAttachImageOption;
+  AddNewMessageButton(this.onAddNewMessage, {this.haveAttachImageOption = false});
 
   @override
   Widget build(BuildContext context) {

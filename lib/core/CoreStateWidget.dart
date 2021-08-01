@@ -13,6 +13,7 @@ abstract class CoreScreenState<CS extends CoreScreenWidget> extends State<CS> {
   var isLargeScreen = false;
   var isSafeArea = true;
   var textScaleFactor = 1.0;
+  bool showFunctionButton = true;
 
   ScreenshotController screenshotController = ScreenshotController();
 

@@ -9,7 +9,8 @@ class IGMessageInputWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: gray_F1F1, borderRadius: BorderRadius.circular(26)),
+      decoration: BoxDecoration(
+          color: gray_F1F1, borderRadius: BorderRadius.circular(26)),
       margin: EdgeInsets.symmetric(horizontal: 16),
       padding: EdgeInsets.symmetric(vertical: 2),
       child: Row(children: <Widget>[
@@ -37,22 +38,16 @@ class IGMessageInputWidget extends StatelessWidget {
         )),
         IconButton(
           color: gray5,
-          icon: ImageUtils.getImagesSvg(IC_IG_MICRO,
-              color: gray5, width: 25, height: 25),
+          icon: ImageUtils.getImagesSvg(IC_IG_MICRO, color: Colors.black.withOpacity(0.8), width: 25, height: 25),
           iconSize: 25,
           padding: EdgeInsets.only(left: 12),
           onPressed: () => Navigator.pop(context),
         ),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-              child: ImageUtils.getImagesSvg(IC_IG_IMAGE, color: Colors.black.withOpacity(0.8), width: 25, height: 25)),
-        IconButton(
-          color: gray5,
-          icon: Icon(Icons.add_circle, color: Colors.black.withOpacity(0.9),),
-          iconSize: 32,
-          padding: EdgeInsets.only(right: 12),
-          onPressed: () => Navigator.pop(context),
-        ),
+        SizedBox(width: 12),
+        ImageUtils.getImagesSvg(IC_IG_IMAGE, color: Colors.black.withOpacity(0.8), width: 25, height: 25),
+        SizedBox(width: 18),
+        ImageUtils.getImagesSvg(IC_IG_EMOJI, color: Colors.black.withOpacity(0.8), width: 25, height: 25),
+        SizedBox(width: 12),
       ]),
     );
   }

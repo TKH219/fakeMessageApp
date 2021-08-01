@@ -38,7 +38,6 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
   MessageDetailModel model = MessageDetailModel();
 
   late Widget avatarWidget;
-  bool showFunctionButton = true;
   int unreadMessage = 1;
 
   @override
@@ -113,7 +112,7 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
                         setState(() {
                           this.model.contents.add(model);
                         });
-                      }),
+                      }, haveAttachImageOption: false),
                       SizedBox(width: 16),
                       functionButtonWidget(),
                     ],

@@ -18,11 +18,12 @@ import 'SelectMessageTypeWidget.dart';
 
 class AddNewMessageWidget extends CoreScreenWidget {
   final Function(MessageItemModel)? onDone;
+  final bool haveAttachImageOption = false;
+
+  AddNewMessageWidget({this.onDone, haveAttachImageOption = false});
 
   @override
   AddNewMessageState createState() => AddNewMessageState();
-
-  AddNewMessageWidget({this.onDone});
 }
 
 class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
@@ -71,7 +72,7 @@ class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
             ),
             SizedBox(height: 16),
             SelectMessageTypeWidget(listMessageType),
-            changeReceiverAvatar(),
+            attachImage(),
             SizedBox(height: 16),
             ConfirmButton("done".toUpperCase(), onTapButton: onTapDone)
           ],
@@ -80,7 +81,9 @@ class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
     );
   }
 
-  Widget changeReceiverAvatar() {
+  Widget attachImage() {
+    if (!widget.haveAttachImageOption) return SizedBox.shrink();
+
     return ListTile(
         title: Text(
           'Attach image file',

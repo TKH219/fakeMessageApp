@@ -10,7 +10,7 @@ class MessageDetailModel extends Object {
 
   MessageDetailModel(
       {this.receiverName = "Mr. X",
-      this.lastTimeOnline = 'Vừa mới truy cập',
+      this.lastTimeOnline = 'Just now',
       this.receiverAvatar,
       this.contents = const<MessageItemModel>[]}) {
     this.contents = [];

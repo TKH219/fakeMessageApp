@@ -1,6 +1,7 @@
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
 import 'package:fake_message_screen/features/InstagramMessageDetail/CustomView/IGMessageInputWidget.dart';
+import 'package:fake_message_screen/features/customView/AddNewMessageButton.dart';
 import 'package:fake_message_screen/features/customView/AddNewMessageWidget.dart';
 import 'package:fake_message_screen/features/customView/ConfirmButton.dart';
 import 'package:fake_message_screen/features/customView/CustomTextField.dart';
@@ -25,14 +26,17 @@ class InstagramMessageDetailScreen extends CoreScreenWidget {
   InstagramMessageDetailState createState() => InstagramMessageDetailState();
 }
 
-class InstagramMessageDetailState
-    extends CoreScreenState<InstagramMessageDetailScreen> {
+class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetailScreen> {
+
   late MessageDetailModel model;
+  late Widget avatarWidget;
 
   @override
   void initState() {
     super.initState();
     model = MessageDetailModel();
+    avatarWidget = ImageUtils.getImagesSvg(IC_AVATAR_DEFAULT_IMESS,
+        width: 40, height: 40, color: gray5);
   }
 
   @override
@@ -44,6 +48,7 @@ class InstagramMessageDetailState
       centerTitle: false,
       automaticallyImplyLeading: false,
       leading: null,
+      elevation: 1,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -51,22 +56,13 @@ class InstagramMessageDetailState
             onTap: () => Navigator.of(context).pop(),
             child: Container(
               padding: EdgeInsets.only(right: 10),
-              child: Icon(Icons.arrow_back_ios_sharp, size: 24, color: Colors.black.withOpacity(0.8),),
-            ),
+              child: ImageUtils.getImagesSvg(IC_BACK_ARROW, width: 18, height: 18, color: Colors.black.withOpacity(0.8))),
           ),
           Container(
             padding: EdgeInsets.only(right: 12),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: (this.model.receiverAvatar == null ||
-                      (this.model.receiverAvatar?.isEmpty == null))
-                  ? ImageUtils.getImagesSvg(IC_AVATAR_DEFAULT_IMESS,
-                      width: 40, height: 40, color: gray5)
-                  : Image.network(
-                      this.model.receiverAvatar!,
-                      height: 40,
-                      width: 40,
-                    ),
+              borderRadius: BorderRadius.circular(20),
+              child: avatarWidget,
             ),
           ),
           Column(
@@ -75,15 +71,14 @@ class InstagramMessageDetailState
             children: [
               Text(
                 model.receiverName,
-                style: TextStyles.NORMAL_LABEL.getStyle.copyWith(
+                style: TextStyles.HEADING_5.getStyle.copyWith(
                     color: Colors.black,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
+                    fontSize: 18),
                 textAlign: TextAlign.left,
               ),
               Text(model.lastTimeOnline,
                   style: TextStyles.CAPTION.getStyle
-                      .copyWith(color: gray_600, fontSize: 11),
+                      .copyWith(color: gray_600, fontSize: 13),
                   textAlign: TextAlign.left),
             ],
           ),
@@ -92,7 +87,7 @@ class InstagramMessageDetailState
       actions: [
         IconButton(
           color: Colors.black,
-          icon: ImageUtils.getImagesSvg(IC_IG_VIDEO, width: 22, height: 25, color: Colors.black),
+          icon: ImageUtils.getImagesSvg(IC_IG_VIDEO, width: 24, height: 24, color: Colors.black),
           iconSize: 24,
           padding: EdgeInsets.only(left: 18),
           onPressed: () => Navigator.pop(context),
@@ -113,7 +108,7 @@ class InstagramMessageDetailState
   Widget buildMobileLayout(BuildContext context) {
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.symmetric(vertical: 16),
+      padding: EdgeInsets.only(bottom: 16),
       child: Stack(
         children: [
           ListView.separated(
@@ -145,12 +140,31 @@ class InstagramMessageDetailState
                       )
                     : IncomingIGMessageWidget(
                         model.contents[index].content,
-                        model.receiverAvatar,
+                        avatarWidget,
                         shouldBorderBottomLeft: shouldShowBorderBottom,
                         shouldBorderTopLeft: shouldShowBorderTop,
                       );
               }),
-          Positioned(bottom: 100, right: 16, child: functionButton()),
+          Positioned(
+              bottom: 120,
+              right: 16,
+              child: Visibility(
+                visible: showFunctionButton,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    AddNewMessageButton((model) {
+                      setState(() {
+                        this.model.contents.add(model);
+                      });
+                    }, haveAttachImageOption: false),
+                    SizedBox(width: 16),
+                    functionButton(),
+                  ],
+                ),
+              )),
           Positioned(
               bottom: MediaQuery.of(context).padding.bottom,
               left: 0,
@@ -171,7 +185,11 @@ class InstagramMessageDetailState
                 setState(() {
                   model = _model;
                 });
-              });
+              }, onChangeAvatar: (file) {
+                setState(() {
+                  avatarWidget = Image.file(file, width: 40, height: 40, fit: BoxFit.cover);
+                });
+              },);
             });
       },
     );

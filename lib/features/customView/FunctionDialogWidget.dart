@@ -1,21 +1,26 @@
+import 'dart:io';
+
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
 import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageDetailModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
+import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 import 'AddNewMessageWidget.dart';
+import 'ChangeAvatarWidget.dart';
 import 'ConfirmButton.dart';
 import 'CustomTextField.dart';
+import 'SaveScreenshotWidget.dart';
 
 class FunctionDialogWidget extends CoreScreenWidget{
 
   MessageDetailModel model;
   Function(MessageDetailModel) onDone;
-
-  FunctionDialogWidget(this.model, this.onDone);
+  Function(File)? onChangeAvatar;
+  FunctionDialogWidget(this.model, this.onDone, {this.onChangeAvatar});
 
   @override
   FunctionDialogState createState() => FunctionDialogState();
@@ -43,7 +48,11 @@ class FunctionDialogState extends CoreScreenState<FunctionDialogWidget> {
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(width: 1, color: gray1),
                   ),
-                  hintText: "Change Name"),
+                  contentPadding:
+                  EdgeInsets.symmetric(horizontal: 12),
+                  hintStyle: TextStyles.NORMAL_LABEL.getStyle
+                      .copyWith(color: gray5),
+                  hintText: "Change phone number"),
               maxLines: 1,
             ),
 
@@ -54,34 +63,31 @@ class FunctionDialogState extends CoreScreenState<FunctionDialogWidget> {
                   widget.model.lastTimeOnline = text;
                 });
               },
+
               decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(width: 1, color: gray1),
                   ),
+                  contentPadding:
+                  EdgeInsets.symmetric(horizontal: 12),
+                  hintStyle: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray5),
                   hintText: "Change last time online"),
               maxLines: 1,
             ),
-
             SizedBox(height: 12),
-            ListTile(
-              leading: new Icon(Icons.photo),
-              title: new Text('Add new message'),
-              onTap: () {
-                // Navigator.pop(context);
-                showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return addNewMessage();
-                    });
+            changeReceiverAvatar(),
+            SaveScreenshotWidget(
+              this.screenshotController,
+              onBegin: () {
+                setState(() {
+                  showFunctionButton = false;
+                });
               },
-            ),
-            SizedBox(height: 12),
-            ListTile(
-              leading: new Icon(Icons.music_note),
-              title: new Text('Change receiver avatar'),
-              onTap: () {
-                Navigator.pop(context);
+              onEnd: () {
+                setState(() {
+                  showFunctionButton = true;
+                });
               },
             ),
             SizedBox(height: 12),
@@ -102,6 +108,14 @@ class FunctionDialogState extends CoreScreenState<FunctionDialogWidget> {
         widget.model.contents.add(messageModel);
         widget.onDone(widget.model);
       });
-    },);
+    });
+  }
+
+  Widget changeReceiverAvatar() {
+    return ChangeAvatarWidget((file) {
+      if (widget.onChangeAvatar != null) {
+        widget.onChangeAvatar!(file);
+      }
+    });
   }
 }
