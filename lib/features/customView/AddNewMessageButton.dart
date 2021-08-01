@@ -32,8 +32,16 @@ class AddNewMessageButton extends StatelessWidget {
   void onTap(BuildContext context) {
     showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (context) {
-          return AddNewMessageWidget(onDone: this.onAddNewMessage,);
+          return Container(
+              constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.7,
+                  minHeight: 300
+              ),
+
+              // height: double.infinity,
+              child: AddNewMessageWidget(onDone: this.onAddNewMessage,));
         });
   }
 }

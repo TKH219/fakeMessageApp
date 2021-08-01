@@ -39,6 +39,7 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
 
   late Widget avatarWidget;
   bool showFunctionButton = true;
+  int unreadMessage = 1;
 
   @override
   void initState() {
@@ -68,14 +69,15 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
                   var originalIndex = index - 1;
                   var messageModel = model.contents[originalIndex];
                   int nextIndex = originalIndex + 1;
-                  bool showImageBubble =
-                      (nextIndex == model.contents.length ||
-                          (nextIndex < model.contents.length &&
-                              model.contents[nextIndex].messageType !=
-                                  model.contents[originalIndex].messageType));
-                  if (messageModel.messageType == MessageType.OUTGOING_MESSAGE) {
+                  bool showImageBubble = (nextIndex == model.contents.length ||
+                      (nextIndex < model.contents.length &&
+                          model.contents[nextIndex].messageType !=
+                              model.contents[originalIndex].messageType));
+                  if (messageModel.messageType ==
+                      MessageType.OUTGOING_MESSAGE) {
                     return Padding(
-                      padding: EdgeInsets.only(right: showImageBubble ? 6 : 16, top: 2),
+                      padding: EdgeInsets.only(
+                          right: showImageBubble ? 6 : 16, top: 2),
                       child: getSenderView(
                           showImageBubble
                               ? ChatBubbleClipper3(BubbleType.sendBubble)
@@ -86,7 +88,8 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
                   }
 
                   return Padding(
-                    padding: EdgeInsets.only(left: showImageBubble ? 6 : 16, top: 2),
+                    padding:
+                        EdgeInsets.only(left: showImageBubble ? 6 : 16, top: 2),
                     child: getReceiverView(
                         showImageBubble
                             ? ChatBubbleClipper3(BubbleType.receiverBubble)
@@ -96,24 +99,28 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
                   );
                 }),
             Positioned(top: 0, left: 0, right: 0, child: appBarContent()),
-            Positioned(bottom: 120, right: 16, child: Visibility(
-              visible: showFunctionButton,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  AddNewMessageButton((model) {
-                    setState(() {
-                      this.model.contents.add(model);
-                    });
-                  }),
-                  SizedBox(width: 16),
-                  functionButtonWidget(),
-                ],
-              ),
-            )),
-            Positioned(bottom: 0, left: 0, right: 0, child: IMessageInputField()),
+            Positioned(
+                bottom: 120,
+                right: 16,
+                child: Visibility(
+                  visible: showFunctionButton,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      AddNewMessageButton((model) {
+                        setState(() {
+                          this.model.contents.add(model);
+                        });
+                      }),
+                      SizedBox(width: 16),
+                      functionButtonWidget(),
+                    ],
+                  ),
+                )),
+            Positioned(
+                bottom: 0, left: 0, right: 0, child: IMessageInputField()),
           ],
         ));
   }
@@ -146,14 +153,18 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(width: 1, color: gray1),
                             ),
-                            hintText: "Change Name"),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 12),
+                            hintStyle: TextStyles.NORMAL_LABEL.getStyle
+                                .copyWith(color: gray5),
+                            hintText: "Change phone number"),
                         maxLines: 1,
                       ),
                       SizedBox(height: 12),
                       CustomTextField(
                         onChanged: (text) {
                           setState(() {
-                            model.lastTimeOnline = text;
+                            unreadMessage = int.parse(text);
                           });
                         },
                         decoration: InputDecoration(
@@ -161,8 +172,12 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(width: 1, color: gray1),
                             ),
-                            hintText: "Change last time online"),
+                            contentPadding:
+                            EdgeInsets.symmetric(horizontal: 12),
+                            hintStyle: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray5),
+                            hintText: "Change number of unread messages"),
                         maxLines: 1,
+                        keyboardType: TextInputType.number,
                       ),
                       SizedBox(height: 12),
                       changeReceiverAvatar(),
@@ -198,34 +213,33 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
   Widget appBarContent() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 3,
-              offset: Offset(0.0, -1))
-        ],
+        color: white_600.withOpacity(0.95),
+        border: Border(bottom: BorderSide(
+          color: gray6,
+          width: 0.5
+        )),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          IconButton(
-              color: primaryColor,
-              padding: EdgeInsets.only(top: 26),
-              alignment: Alignment.center,
-              icon: Icon(
-                Icons.arrow_back_ios,
-                size: 24,
+          InkWell(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              padding: EdgeInsets.only(left: 16, top: 12),
+              child: Row(
+                children: [
+                  ImageUtils.getImagesSvg(IC_BACK_ARROW, width: 22, height: 22, color: primaryColor),
+                  numberNotification(),
+                ],
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          // numberNotification(),
+            ),
+          ),
+
           Expanded(
             child: Container(
+              // color: Colors.red,
               margin: EdgeInsets.only(right: 48),
               padding: EdgeInsets.only(bottom: 10),
               child: Column(
@@ -243,15 +257,15 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
                     children: [
                       Text(
                         "${model.receiverName}",
-                        style: TextStyles.NORMAL_LABEL.getStyle
-                            .copyWith(color: black_0103),
+                        style: TextStyles.BODY_2.getStyle
+                            .copyWith(color: black_0103, fontSize: 15),
                         textAlign: TextAlign.left,
                       ),
                       SizedBox(width: 4),
                       Text(
                         ">",
                         style: TextStyles.NORMAL_LABEL.getStyle
-                            .copyWith(color: gray7),
+                            .copyWith(color: gray5, fontSize: 16),
                       ),
                     ],
                   ),
@@ -265,16 +279,22 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
   }
 
   Widget numberNotification() {
+    if (unreadMessage == 0) return SizedBox(width: 24);
     return Container(
       width: 24,
       height: 24,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
           color: primaryColor,
           borderRadius: BorderRadius.all(Radius.circular(12))),
-      child: Text(
-        "1",
-        style: TextStyles.BUTTON.getStyle.copyWith(color: Colors.white),
-        textAlign: TextAlign.center,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: 2),
+        child: Text(
+          unreadMessage.toString(),
+          style: TextStyles.CAPTION.getStyle
+              .copyWith(color: Colors.white, fontSize: 16),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
@@ -292,7 +312,8 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
     });
   }
 
-  Widget getSenderView(CustomClipper<Path> clipper, BuildContext context, MessageItemModel model) =>
+  Widget getSenderView(CustomClipper<Path> clipper, BuildContext context,
+          MessageItemModel model) =>
       ChatBubble(
         clipper,
         alignment: Alignment.topRight,
@@ -309,7 +330,8 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
         ),
       );
 
-  Widget getReceiverView(CustomClipper<Path> clipper, BuildContext context, MessageItemModel model) =>
+  Widget getReceiverView(CustomClipper<Path> clipper, BuildContext context,
+          MessageItemModel model) =>
       ChatBubble(
         clipper,
         backGroundColor: gray_e9eb,

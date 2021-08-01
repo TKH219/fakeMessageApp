@@ -26,7 +26,6 @@ class AddNewMessageWidget extends CoreScreenWidget {
 }
 
 class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
-
   MessageItemModel model = MessageItemModel();
 
   late List<ItemKey> listMessageType = [];
@@ -44,6 +43,7 @@ class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
   Widget buildMobileLayout(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
+          top: 16,
           left: 16,
           right: 16,
           bottom: MediaQuery.of(context).padding.bottom +
@@ -52,7 +52,6 @@ class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 16),
             CustomTextField(
               decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -83,14 +82,18 @@ class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
 
   Widget changeReceiverAvatar() {
     return ListTile(
-        title: Text('Attach image file', style: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray9),),
+        title: Text(
+          'Attach image file',
+          style: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray9),
+        ),
         contentPadding: EdgeInsets.symmetric(vertical: 0),
         onTap: () async {
           var isGranted = await PermissionService.getPhotoPermission(context);
           if (isGranted) {
             try {
               final ImagePicker _picker = ImagePicker();
-              final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+              final pickedFile =
+                  await _picker.getImage(source: ImageSource.gallery);
               setState(() {
                 if (pickedFile != null) {
                   model.imageFile = File(pickedFile.path);
@@ -102,12 +105,12 @@ class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
               print(e.toString());
             }
           }
-        }
-    );
+        });
   }
 
   void onTapDone() {
-    ItemKey? selectedItemKey = listMessageType.firstWhere((item) => item.isSelected == true);
+    ItemKey? selectedItemKey =
+        listMessageType.firstWhere((item) => item.isSelected == true);
     if (selectedItemKey != null) {
       this.model.messageType = selectedItemKey.key as MessageType;
       if (widget.onDone != null) {

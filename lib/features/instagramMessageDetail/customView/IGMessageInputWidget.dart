@@ -9,15 +9,15 @@ class IGMessageInputWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          color: gray_8b8b, borderRadius: BorderRadius.circular(40)),
+      decoration: BoxDecoration(color: gray_F1F1, borderRadius: BorderRadius.circular(26)),
       margin: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(vertical: 2),
       child: Row(children: <Widget>[
         Container(
-          width: 40,
-          height: 40,
+          width: 42,
+          height: 42,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(21),
             color: blue_primary_500,
           ),
           margin: EdgeInsets.symmetric(horizontal: 8),
@@ -33,7 +33,7 @@ class IGMessageInputWidget extends StatelessWidget {
             child: Text(
           'Message...',
           style:
-              TextStyles.BODY_1.getStyle.copyWith(color: gray3, fontSize: 16),
+              TextStyles.BODY_1.getStyle.copyWith(color: gray5, fontSize: 18),
         )),
         IconButton(
           color: gray5,
@@ -43,16 +43,12 @@ class IGMessageInputWidget extends StatelessWidget {
           padding: EdgeInsets.only(left: 12),
           onPressed: () => Navigator.pop(context),
         ),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8.0),
+              child: ImageUtils.getImagesSvg(IC_IG_IMAGE, color: Colors.black.withOpacity(0.8), width: 25, height: 25)),
         IconButton(
           color: gray5,
-          icon: ImageUtils.getImagesSvg(IC_IG_IMAGE,
-              color: gray5, width: 25, height: 25),
-          iconSize: 25,
-          onPressed: () => Navigator.pop(context),
-        ),
-        IconButton(
-          color: gray5,
-          icon: Icon(Icons.add_circle, color: Colors.black,),
+          icon: Icon(Icons.add_circle, color: Colors.black.withOpacity(0.9),),
           iconSize: 32,
           padding: EdgeInsets.only(right: 12),
           onPressed: () => Navigator.pop(context),

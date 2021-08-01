@@ -60,8 +60,8 @@ class InstagramMessageDetailState
               borderRadius: BorderRadius.circular(16),
               child: (this.model.receiverAvatar == null ||
                       (this.model.receiverAvatar?.isEmpty == null))
-                  ? ImageUtils.getOriginalImagesSvg(IC_AVATAR_DEFAULT,
-                      width: 40, height: 40)
+                  ? ImageUtils.getImagesSvg(IC_AVATAR_DEFAULT_IMESS,
+                      width: 40, height: 40, color: gray5)
                   : Image.network(
                       this.model.receiverAvatar!,
                       height: 40,

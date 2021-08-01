@@ -6,10 +6,11 @@ class CustomTextField extends StatefulWidget {
   Function(String)? onChanged;
   InputDecoration? decoration;
   int maxLines;
+  TextInputType? keyboardType;
   @override
   CustomTextFieldState createState() => CustomTextFieldState();
 
-  CustomTextField({this.onChanged, this.decoration, this.maxLines = 1});
+  CustomTextField({this.onChanged, this.decoration, this.maxLines = 1, this.keyboardType});
 }
 
 class CustomTextFieldState extends State<CustomTextField> {
@@ -26,6 +27,7 @@ class CustomTextFieldState extends State<CustomTextField> {
             widget.onChanged!(text);
           }
         },
+        keyboardType: widget.keyboardType ?? (widget.maxLines == 1 ? TextInputType.text : TextInputType.multiline),
         obscureText: false,
         maxLines: widget.maxLines,
         style: TextStyles.BODY_1.getStyle,

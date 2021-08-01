@@ -37,7 +37,10 @@ const gray_8b8b = Color(0xff8B8B8B);
 const gray_e9eb = Color(0xffE9E9EB);
 const gray_b3c8 = Color(0xffA2B3C8);
 const gray_9999 = Color(0xff999999);
+const gray_F1F1 = Color(0xffF1F1F1);
 
 const purple_400 = Color(0xff853FBD);
 
 const backgroundColor = Color(0xffE3E5F0);
+
+const white_600 = Color(0xffF5F5F5);
