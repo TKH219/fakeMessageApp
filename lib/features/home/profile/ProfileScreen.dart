@@ -3,23 +3,28 @@ import 'package:fake_message_screen/core/CoreStateWidget.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/ImageAssetsConstant.dart';
 import 'package:fake_message_screen/utils/ImageUtils.dart';
+import 'package:fake_message_screen/utils/InAppPurchaseHandler.dart';
+import 'package:fake_message_screen/utils/StorageManager.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'CustomView/InfoProfileItemWidget.dart';
 
-enum ProfileScreenStructure { UPGRADE_PREMIUM, SIGN_OUT }
+enum ProfileScreenStructure { UPGRADE_PREMIUM, RESTORE_PREMIUM, SIGN_OUT }
 
 extension ProfileScreenStructureExtension on ProfileScreenStructure {
   String getTitle() {
     switch (this) {
       case ProfileScreenStructure.UPGRADE_PREMIUM:
-        return "Nâng cấp VIP";
+        return "Upgrade VIP";
       case ProfileScreenStructure.SIGN_OUT:
         return "Đăng xuất";
+      case ProfileScreenStructure.RESTORE_PREMIUM:
+        return "Restore VIP";
       default:
         return "";
     }
@@ -28,6 +33,8 @@ extension ProfileScreenStructureExtension on ProfileScreenStructure {
   String getImagePath() {
     switch (this) {
       case ProfileScreenStructure.UPGRADE_PREMIUM:
+        return IC_CHANGE_PASSWORD;
+      case ProfileScreenStructure.RESTORE_PREMIUM:
         return IC_CHANGE_PASSWORD;
       case ProfileScreenStructure.SIGN_OUT:
         return IC_CHANGE_PASSWORD;
@@ -43,6 +50,9 @@ class ProfileScreen extends CoreScreenWidget {
 }
 
 class ProfileState extends CoreScreenState<ProfileScreen> {
+
+  bool isPremiumUser = false;
+
   RefreshController refreshController = RefreshController();
 
   @override
@@ -57,6 +67,12 @@ class ProfileState extends CoreScreenState<ProfileScreen> {
             .copyWith(fontSize: 18, color: Colors.white),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getRoleUser();
   }
 
   @override
@@ -82,7 +98,7 @@ class ProfileState extends CoreScreenState<ProfileScreen> {
             },
           ),
           controller: refreshController,
-          onRefresh: null,
+          onRefresh: onRefresh,
           child: ListView.builder(
               itemCount: numberFields + 2,
               itemBuilder: (context, index) {
@@ -108,57 +124,44 @@ class ProfileState extends CoreScreenState<ProfileScreen> {
   }
 
   Widget _buildSubProfileInfo() {
-    return InkWell(
-      onTap: null,
-      child: Container(
-        decoration: BoxDecoration(
-            border: Border(
-                top: BorderSide(
-                  color: gray1,
-                  width: 1,
-                ),
-                bottom: BorderSide(
-                  color: gray1,
-                  width: 1,
-                )),
-            color: Colors.white),
-        margin: EdgeInsets.only(top: 33, bottom: 17),
-        padding: EdgeInsets.symmetric(vertical: 20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              width: 24,
-            ),
-            ImageUtils.getOriginalImagesSvg(IC_AVATAR_DEFAULT,
-                width: 50, height: 50),
-            SizedBox(
-              width: 15,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text("HaTK",
-                      // UserManager.instance.profileModel?.getFullName()??"",
-                      style: TextStyles.NORMAL_LABEL.getStyle
-                          .copyWith(color: gray9)),
-                  Text("0946013246",
-                      style:
-                          TextStyles.CAPTION.getStyle.copyWith(color: gray6)),
-                ],
+    return Container(
+      decoration: BoxDecoration(
+          border: Border(
+              top: BorderSide(
+                color: gray1,
+                width: 1,
               ),
-            ),
-            Padding(
-                padding: EdgeInsets.only(right: 16),
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  color: gray3,
-                  size: 16,
-                )),
-          ],
-        ),
+              bottom: BorderSide(
+                color: gray1,
+                width: 1,
+              )),
+          color: Colors.white),
+      margin: EdgeInsets.only(top: 33, bottom: 17),
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(
+            width: 24,
+          ),
+          ImageUtils.getOriginalImagesSvg(IC_AVATAR_DEFAULT,
+              width: 50, height: 50),
+          SizedBox(
+            width: 15,
+          ),
+          Expanded(
+            child: Text(getTitleUser(),
+                style: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray9)),
+          ),
+          Padding(
+              padding: EdgeInsets.only(right: 16),
+              child: Icon(
+                Icons.arrow_forward_ios,
+                color: gray3,
+                size: 16,
+              )),
+        ],
       ),
     );
   }
@@ -167,8 +170,44 @@ class ProfileState extends CoreScreenState<ProfileScreen> {
     return InfoProfileItemWidget(
       title: ProfileScreenStructure.values[index].getTitle(),
       imagePath: IC_CHANGE_PASSWORD,
-      onTapItem: null,
+      onTapItem: () => onTapItem(index),
       hasPadding: false,
     );
+  }
+
+  void getRoleUser() async {
+    await StorageManager().getPremium().then((_isPremium) {
+      setState(() {
+        this.isPremiumUser = _isPremium;
+      });
+    });
+  }
+
+  String getTitleUser() {
+    return this.isPremiumUser ? "Premium User" : "Normal User";
+  }
+
+  onRefresh() {
+    getRoleUser();
+    refreshController.refreshCompleted();
+  }
+
+  void onTapItem(int index) {
+    if (isPremiumUser) {
+      showToastMessage("You already are premium.");
+      return;
+    }
+
+    switch (ProfileScreenStructure.values[index]) {
+      case ProfileScreenStructure.RESTORE_PREMIUM:
+        this.showLoadingCircle(true);
+        InAppPurchaseHandler().restorePurchase();
+        break;
+      case ProfileScreenStructure.UPGRADE_PREMIUM:
+        InAppPurchaseHandler().makingPurchase();
+        break;
+      default:
+        break;
+    }
   }
 }

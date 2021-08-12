@@ -15,6 +15,7 @@ const blue_7cf5 = Color(0xff2F7CF5);
 
 // Black
 const black_0103 = Color(0xff010103);
+const black_4a = const Color(0xFF4a4a4a);
 
 // White
 const white_FDFF = Color(0xffF0FDFF);

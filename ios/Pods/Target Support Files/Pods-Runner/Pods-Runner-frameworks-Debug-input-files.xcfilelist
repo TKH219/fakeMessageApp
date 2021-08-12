@@ -6,3 +6,4 @@ ${BUILT_PRODUCTS_DIR}/image_gallery_saver/image_gallery_saver.framework
 ${BUILT_PRODUCTS_DIR}/image_picker/image_picker.framework
 ${BUILT_PRODUCTS_DIR}/in_app_purchase_ios/in_app_purchase_ios.framework
 ${BUILT_PRODUCTS_DIR}/path_provider/path_provider.framework
+${BUILT_PRODUCTS_DIR}/shared_preferences/shared_preferences.framework

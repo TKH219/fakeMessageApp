@@ -6,6 +6,8 @@ import 'package:fake_message_screen/features/home/selectApp/SelectAppScreen.dart
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/ImageAssetsConstant.dart';
 import 'package:fake_message_screen/utils/ImageUtils.dart';
+import 'package:fake_message_screen/utils/InAppPurchaseHandler.dart';
+import 'package:fake_message_screen/utils/StorageManager.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +48,8 @@ class HomeState extends CoreScreenState<HomeScreen> {
       print("Error");
       // handle error here.
     });
+
+    InAppPurchaseHandler().fetchAllProduct();
   }
 
   @override
@@ -140,23 +144,28 @@ class HomeState extends CoreScreenState<HomeScreen> {
 
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
     purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
-      if (purchaseDetails.status == PurchaseStatus.pending) {
-        // _showPendingUI();
-      } else {
-        if (purchaseDetails.status == PurchaseStatus.error) {
-          // _handleError(purchaseDetails.error!);
-        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored) {
-          // bool valid = await _verifyPurchase(purchaseDetails);
-          // if (valid) {
-            // _deliverProduct(purchaseDetails);
-          // } else {
-            // _handleInvalidPurchase(purchaseDetails);
-          // }
-        }
-        if (purchaseDetails.pendingCompletePurchase) {
-          await InAppPurchase.instance.completePurchase(purchaseDetails);
-        }
+      switch (purchaseDetails.status) {
+        case PurchaseStatus.pending:
+          this.showLoadingCircle(true);
+          break;
+        case PurchaseStatus.error:
+          print("errror");
+          this.showLoadingCircle(false);
+          break;
+        case PurchaseStatus.purchased:
+        case PurchaseStatus.restored:
+          print("Payment success");
+          StorageManager().setPremium();
+          this.showLoadingCircle(false);
+
+          if (purchaseDetails.status == PurchaseStatus.restored) {
+            showToastMessage("Your purchase have been restored successfully! Please refresh my profile screen to update.");
+          }
+          break;
+      }
+
+      if (purchaseDetails.pendingCompletePurchase) {
+        await InAppPurchase.instance.completePurchase(purchaseDetails);
       }
     });
   }

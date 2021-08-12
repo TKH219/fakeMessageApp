@@ -1,5 +1,6 @@
 
 import 'package:fake_message_screen/utils/ColorUtils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:screenshot/screenshot.dart';
 import 'CoreScreenWidget.dart';
@@ -70,8 +71,35 @@ abstract class CoreScreenState<CS extends CoreScreenWidget> extends State<CS> {
         toastLength: Toast.LENGTH_LONG,
         gravity: gravity,
         timeInSecForIosWeb: 1,
-        backgroundColor: gray5,
-        textColor: Colors.black,
+        backgroundColor: gray4,
+        textColor: black_4a,
         fontSize: 15);
+  }
+
+  void showLoadingCircle(bool isLoading) {
+    if (isLoading) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) =>
+            Center(
+              child: Container(
+                width: 80.0,
+                height: 80.0,
+                decoration: BoxDecoration(
+                  color: gray2,
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: CupertinoActivityIndicator(
+                    animating: true, radius: 15,),
+                ),
+              ),
+            ),
+      );
+    } else {
+      Navigator.of(context).pop();
+    }
   }
 }
