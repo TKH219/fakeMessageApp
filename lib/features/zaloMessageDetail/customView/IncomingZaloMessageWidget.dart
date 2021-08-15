@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 
 class IncomingZaloMessageWidget extends StatelessWidget {
   final MessageItemModel model;
-  final Widget? avatarWidget;
+  final Widget avatarWidget;
+  final bool shouldShowAvatar;
 
-  IncomingZaloMessageWidget(this.model, {this.avatarWidget});
+  IncomingZaloMessageWidget(this.model, {required this.avatarWidget, required this.shouldShowAvatar});
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +22,7 @@ class IncomingZaloMessageWidget extends StatelessWidget {
             padding: EdgeInsets.only(left: 16, right: 4),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: this.avatarWidget ??
-                  Image.network(
-                    "https://picsum.photos/250?image=9",
-                    height: 32,
-                    width: 32,
-                  ),
+              child: this.shouldShowAvatar ? this.avatarWidget : Container(height: 24, width: 24),
             ),
           ),
           Flexible(

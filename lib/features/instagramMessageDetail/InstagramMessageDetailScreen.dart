@@ -2,6 +2,7 @@ import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
 import 'package:fake_message_screen/features/InstagramMessageDetail/CustomView/IGMessageInputWidget.dart';
 import 'package:fake_message_screen/features/customView/AddNewMessageButton.dart';
+import 'package:fake_message_screen/features/customView/AddNewMessageWidget.dart';
 import 'package:fake_message_screen/features/customView/FunctionButton.dart';
 import 'package:fake_message_screen/features/customView/FunctionDialogWidget.dart';
 import 'package:fake_message_screen/features/home/selectApp/SelectAppScreen.dart';
@@ -199,7 +200,7 @@ class InstagramMessageDetailState
       listButton.add(IconButton(
         color: Colors.black,
         icon: ImageUtils.getImagesSvg(IC_IG_VIDEO,
-            width: 20, height: 26, color: Colors.black),
+            width: 22, height: 28, color: Colors.black),
         padding: EdgeInsets.only(left: 18),
         onPressed: () => Navigator.pop(context),
       ));
@@ -207,7 +208,7 @@ class InstagramMessageDetailState
       listButton.add(IconButton(
         color: Colors.white,
         icon: ImageUtils.getImagesSvg(IC_IG_INFO,
-            boxFit: BoxFit.fill, width: 24, height: 24, color: Colors.black),
+            boxFit: BoxFit.fill, width: 24, height: 24, color: Colors.black.withOpacity(0.6)),
         padding: EdgeInsets.only(left: 18, right: 24),
         onPressed: () => Navigator.pop(context),
       ));
