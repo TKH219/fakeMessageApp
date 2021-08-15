@@ -229,7 +229,7 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
               padding: EdgeInsets.only(left: 16, top: 12),
               child: Row(
                 children: [
-                  ImageUtils.getImagesSvg(IC_BACK_ARROW, width: 22, height: 22, color: primaryColor),
+                  ImageUtils.getImagesSvg(IC_BACK_ARROW, width: 20, height: 20, color: primaryColor),
                   numberNotification(),
                 ],
               ),
@@ -241,6 +241,7 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
               // color: Colors.red,
               margin: EdgeInsets.only(right: 48),
               padding: EdgeInsets.only(bottom: 10),
+              alignment: Alignment.center,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -253,19 +254,16 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
                   SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         "${model.receiverName}",
                         style: TextStyles.BODY_2.getStyle
-                            .copyWith(color: black_0103, fontSize: 15),
+                            .copyWith(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
                         textAlign: TextAlign.left,
                       ),
                       SizedBox(width: 4),
-                      Text(
-                        ">",
-                        style: TextStyles.NORMAL_LABEL.getStyle
-                            .copyWith(color: gray5, fontSize: 16),
-                      ),
+                      ImageUtils.getImagesSvg(IC_FORWARD_ARROW, width: 8, height: 8, color: gray7),
                     ],
                   ),
                 ],
