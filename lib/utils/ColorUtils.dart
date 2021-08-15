@@ -41,7 +41,7 @@ const gray_9999 = Color(0xff999999);
 const gray_F1F1 = Color(0xffF1F1F1);
 
 const purple_400 = Color(0xff853FBD);
-
+const purple_500 = Color(0xff9344F5);
 const backgroundColor = Color(0xffE3E5F0);
 
 const white_600 = Color(0xffF5F5F5);

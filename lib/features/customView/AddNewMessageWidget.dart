@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
-import 'package:fake_message_screen/features/zaloMessageDetail/model/ItemKey.dart';
-import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageItemModel.dart';
+import 'package:fake_message_screen/model/ItemKey.dart';
+import 'package:fake_message_screen/model/MessageItemModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/Constants.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';

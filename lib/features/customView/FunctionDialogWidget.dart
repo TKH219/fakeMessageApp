@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
-import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageDetailModel.dart';
+import 'package:fake_message_screen/model/MessageDetailModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:flutter/cupertino.dart';

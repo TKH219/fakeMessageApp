@@ -1,7 +1,4 @@
-
-
 import 'package:flutter/cupertino.dart';
-
 import 'ColorUtils.dart';
 
 enum TextStyles {

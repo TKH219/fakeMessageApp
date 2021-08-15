@@ -24,3 +24,5 @@ const String IC_IG_IMAGE = '${ASSETS_ICONS_SVG_PATH}ic_instagram_image.svg';
 const String IC_CAMERA = '${ASSETS_ICONS_SVG_PATH}ic_camera.svg';
 const String IC_AVATAR_DEFAULT_IMESS = '${ASSETS_ICONS_SVG_PATH}ic_avatar_user_default_imess.svg';
 const String IC_BACK_ARROW = '${ASSETS_ICONS_SVG_PATH}ic_back_arrow.svg';
+const String IC_MESSENGER_CAMERA = '${ASSETS_ICONS_SVG_PATH}ic_camera_messenger.svg';
+const String IC_MESSENGER_CALL = '${ASSETS_ICONS_SVG_PATH}ic_messenger_call.svg';

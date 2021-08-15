@@ -7,8 +7,7 @@ import 'package:fake_message_screen/features/customView/AddNewMessageWidget.dart
 import 'package:fake_message_screen/features/customView/ConfirmButton.dart';
 import 'package:fake_message_screen/features/customView/CustomTextField.dart';
 import 'package:fake_message_screen/features/customView/FunctionButton.dart';
-import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageDetailModel.dart';
-import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageItemModel.dart';
+import 'package:fake_message_screen/model/MessageDetailModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/Constants.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
@@ -16,7 +15,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 import 'CustomView/IncomingZaloMessageWidget.dart';

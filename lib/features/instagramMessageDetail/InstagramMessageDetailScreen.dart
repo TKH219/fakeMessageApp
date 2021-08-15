@@ -2,12 +2,11 @@ import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
 import 'package:fake_message_screen/features/InstagramMessageDetail/CustomView/IGMessageInputWidget.dart';
 import 'package:fake_message_screen/features/customView/AddNewMessageButton.dart';
-import 'package:fake_message_screen/features/customView/AddNewMessageWidget.dart';
-import 'package:fake_message_screen/features/customView/ConfirmButton.dart';
-import 'package:fake_message_screen/features/customView/CustomTextField.dart';
 import 'package:fake_message_screen/features/customView/FunctionButton.dart';
 import 'package:fake_message_screen/features/customView/FunctionDialogWidget.dart';
-import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageDetailModel.dart';
+import 'package:fake_message_screen/features/home/selectApp/SelectAppScreen.dart';
+import 'package:fake_message_screen/features/instagramMessageDetail/customView/MessengerInputWidget.dart';
+import 'package:fake_message_screen/model/MessageDetailModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/Constants.dart';
 import 'package:fake_message_screen/utils/ImageAssetsConstant.dart';
@@ -16,18 +15,21 @@ import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 import 'CustomView/IncomingIGMessageWidget.dart';
 import 'CustomView/OutgoingIGMessageWidget.dart';
 
 class InstagramMessageDetailScreen extends CoreScreenWidget {
+  final AppSupport appSupport;
+
+  InstagramMessageDetailScreen({this.appSupport = AppSupport.INSTAGRAM});
+
   @override
   InstagramMessageDetailState createState() => InstagramMessageDetailState();
 }
 
-class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetailScreen> {
-
+class InstagramMessageDetailState
+    extends CoreScreenState<InstagramMessageDetailScreen> {
   late MessageDetailModel model;
   late Widget avatarWidget;
 
@@ -36,7 +38,7 @@ class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetail
     super.initState();
     model = MessageDetailModel();
     avatarWidget = ImageUtils.getImagesSvg(IC_AVATAR_DEFAULT_IMESS,
-        width: 40, height: 40, color: gray5);
+        width: 34, height: 34, color: gray5);
   }
 
   @override
@@ -55,13 +57,16 @@ class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetail
           InkWell(
             onTap: () => Navigator.of(context).pop(),
             child: Container(
-              padding: EdgeInsets.only(right: 10),
-              child: ImageUtils.getImagesSvg(IC_BACK_ARROW, width: 18, height: 18, color: Colors.black.withOpacity(0.8))),
+                padding: EdgeInsets.only(right: 16),
+                child: ImageUtils.getImagesSvg(IC_BACK_ARROW,
+                    width: 18,
+                    height: 18,
+                    color: Colors.black.withOpacity(0.8))),
           ),
           Container(
             padding: EdgeInsets.only(right: 12),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(17),
               child: avatarWidget,
             ),
           ),
@@ -71,9 +76,8 @@ class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetail
             children: [
               Text(
                 model.receiverName,
-                style: TextStyles.HEADING_5.getStyle.copyWith(
-                    color: Colors.black,
-                    fontSize: 18),
+                style: TextStyles.HEADING_5.getStyle
+                    .copyWith(color: Colors.black, fontSize: 18),
                 textAlign: TextAlign.left,
               ),
               Text(model.lastTimeOnline,
@@ -84,23 +88,7 @@ class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetail
           ),
         ],
       ),
-      actions: [
-        IconButton(
-          color: Colors.black,
-          icon: ImageUtils.getImagesSvg(IC_IG_VIDEO, width: 24, height: 24, color: Colors.black),
-          iconSize: 24,
-          padding: EdgeInsets.only(left: 18),
-          onPressed: () => Navigator.pop(context),
-        ),
-        IconButton(
-          color: Colors.white,
-          icon: ImageUtils.getImagesSvg(IC_IG_INFO,
-              boxFit: BoxFit.fill, width: 24, height: 24, color: Colors.black),
-          iconSize: 24,
-          padding: EdgeInsets.only(left: 18, right: 24),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ],
+      actions: listActionButtonAppBar(),
     );
   }
 
@@ -133,17 +121,15 @@ class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetail
                                 model.contents[index].messageType));
                 return (model.contents[index].messageType ==
                         MessageType.OUTGOING_MESSAGE)
-                    ? OutgoingIGMessageWidget(
-                        model.contents[index].content,
+                    ? OutgoingIGMessageWidget(model.contents[index].content,
                         shouldBorderBottomRight: shouldShowBorderBottom,
                         shouldBorderTopRight: shouldShowBorderTop,
-                      )
+                        appSupport: widget.appSupport)
                     : IncomingIGMessageWidget(
-                        model.contents[index].content,
-                        avatarWidget,
+                        model.contents[index].content, avatarWidget,
                         shouldBorderBottomLeft: shouldShowBorderBottom,
                         shouldBorderTopLeft: shouldShowBorderTop,
-                      );
+                        appSupport: widget.appSupport);
               }),
           Positioned(
               bottom: 120,
@@ -165,11 +151,7 @@ class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetail
                   ],
                 ),
               )),
-          Positioned(
-              bottom: MediaQuery.of(context).padding.bottom,
-              left: 0,
-              right: 0,
-              child: IGMessageInputWidget())
+          buildInputWidget()
         ],
       ),
     );
@@ -181,17 +163,72 @@ class InstagramMessageDetailState extends CoreScreenState<InstagramMessageDetail
         showModalBottomSheet(
             context: context,
             builder: (context) {
-              return FunctionDialogWidget(model, (_model) {
-                setState(() {
-                  model = _model;
-                });
-              }, onChangeAvatar: (file) {
-                setState(() {
-                  avatarWidget = Image.file(file, width: 40, height: 40, fit: BoxFit.cover);
-                });
-              },);
+              return FunctionDialogWidget(
+                model,
+                (_model) {
+                  setState(() {
+                    model = _model;
+                  });
+                },
+                onChangeAvatar: (file) {
+                  setState(() {
+                    avatarWidget = Image.file(file,
+                        width: 34, height: 34, fit: BoxFit.cover);
+                  });
+                },
+              );
             });
       },
     );
+  }
+
+  Widget buildInputWidget() {
+    bool isInstagram = widget.appSupport == AppSupport.INSTAGRAM;
+
+    return Positioned(
+        bottom: isInstagram ? MediaQuery.of(context).padding.bottom : 0,
+        left: 0,
+        right: 0,
+        child: isInstagram ? IGMessageInputWidget() : MessengerInputWidget());
+  }
+
+  List<Widget> listActionButtonAppBar() {
+    List<Widget> listButton = [];
+
+    if (widget.appSupport == AppSupport.INSTAGRAM) {
+      listButton.add(IconButton(
+        color: Colors.black,
+        icon: ImageUtils.getImagesSvg(IC_IG_VIDEO,
+            width: 20, height: 26, color: Colors.black),
+        padding: EdgeInsets.only(left: 18),
+        onPressed: () => Navigator.pop(context),
+      ));
+
+      listButton.add(IconButton(
+        color: Colors.white,
+        icon: ImageUtils.getImagesSvg(IC_IG_INFO,
+            boxFit: BoxFit.fill, width: 24, height: 24, color: Colors.black),
+        padding: EdgeInsets.only(left: 18, right: 24),
+        onPressed: () => Navigator.pop(context),
+      ));
+    } else {
+      listButton.add(IconButton(
+        color: primaryColor,
+        icon: ImageUtils.getImagesSvg(IC_MESSENGER_CALL,
+            width: 22, height: 22, color: purple_500),
+        padding: EdgeInsets.only(left: 18),
+        onPressed: () => Navigator.pop(context),
+      ));
+
+      listButton.add(IconButton(
+        color: Colors.white,
+        icon: ImageUtils.getImagesSvg(IC_MESSENGER_CAMERA,
+            boxFit: BoxFit.fill, width: 24, height: 30, color: purple_500),
+        padding: EdgeInsets.only(left: 18, right: 24),
+        onPressed: () => Navigator.pop(context),
+      ));
+    }
+
+    return listButton;
   }
 }

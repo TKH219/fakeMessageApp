@@ -1,4 +1,4 @@
-import 'package:fake_message_screen/features/zaloMessageDetail/model/ItemKey.dart';
+import 'package:fake_message_screen/model/ItemKey.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:flutter/cupertino.dart';

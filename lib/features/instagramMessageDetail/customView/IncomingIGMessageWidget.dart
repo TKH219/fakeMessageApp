@@ -1,3 +1,4 @@
+import 'package:fake_message_screen/features/home/selectApp/SelectAppScreen.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/ImageAssetsConstant.dart';
 import 'package:fake_message_screen/utils/ImageUtils.dart';
@@ -10,12 +11,15 @@ class IncomingIGMessageWidget extends StatelessWidget {
   final Widget? avatar;
   final bool shouldBorderTopLeft;
   final bool shouldBorderBottomLeft;
+  final AppSupport appSupport;
 
   IncomingIGMessageWidget(this.message, this.avatar,
-      {this.shouldBorderBottomLeft = true, this.shouldBorderTopLeft = true});
+      {this.shouldBorderBottomLeft = true, this.shouldBorderTopLeft = true, this.appSupport = AppSupport.INSTAGRAM});
 
   @override
   Widget build(BuildContext context) {
+    bool isInstagram = this.appSupport == AppSupport.INSTAGRAM;
+
     return Container(
       child: Row(
         children: [
@@ -33,11 +37,10 @@ class IncomingIGMessageWidget extends StatelessWidget {
               padding: EdgeInsets.only(left: 12, right: 12, bottom: 4, top: 8),
               margin: EdgeInsets.only(right: 60),
               decoration: BoxDecoration(
-                  color: gray_efef,
+                  color: isInstagram ? gray_efef : gray_F1F1,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(shouldBorderTopLeft ? 25 : 6),
-                      bottomLeft:
-                          Radius.circular(shouldBorderBottomLeft ? 25 : 6),
+                      bottomLeft: Radius.circular(shouldBorderBottomLeft ? 25 : 6),
                       bottomRight: Radius.circular(25),
                       topRight: Radius.circular(25))),
               child: Padding(
@@ -45,7 +48,7 @@ class IncomingIGMessageWidget extends StatelessWidget {
                 child: Text(
                   this.message,
                   style: TextStyles.BODY_2.getStyle
-                      .copyWith(fontSize: 14, color: Colors.black),
+                      .copyWith(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),
                   maxLines: 9,
                   overflow: TextOverflow.ellipsis,
                 ),

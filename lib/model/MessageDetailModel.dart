@@ -1,5 +1,6 @@
-import 'package:fake_message_screen/features/zaloMessageDetail/model/MessageItemModel.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'MessageItemModel.dart';
 
 @JsonSerializable()
 class MessageDetailModel extends Object {

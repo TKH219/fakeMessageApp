@@ -4,11 +4,9 @@ import 'package:fake_message_screen/route/RouterConstant.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/ImageAssetsConstant.dart';
 import 'package:fake_message_screen/utils/ImageUtils.dart';
-import 'package:fake_message_screen/utils/InAppPurchaseHandler.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 enum AppSupport {INSTAGRAM, MESSENGER, ZALO, IMESS}
 
@@ -57,10 +55,9 @@ class SelectAppState extends CoreScreenState<SelectAppScreen> {
       backgroundColor: blue_primary_600,
       brightness: Brightness.light,
       title: Text(
-        "Fake Chat",
+        "Fake Chat Screen",
         overflow: TextOverflow.ellipsis,
-        style: TextStyles.HEADING_6.getStyle.copyWith(
-            fontSize: 18, color: Colors.white),
+        style: TextStyles.HEADING_6.getStyle.copyWith(fontSize: 20, color: Colors.white),
       ),
     );
   }
@@ -101,6 +98,7 @@ class SelectAppState extends CoreScreenState<SelectAppScreen> {
               Navigator.of(context).pushNamed(InstagramMessageDetailRouter);
               break;
             case AppSupport.MESSENGER:
+              Navigator.of(context).pushNamed(InstagramMessageDetailRouter, arguments: AppSupport.MESSENGER);
               break;
             case AppSupport.ZALO:
               Navigator.of(context).pushNamed(ZaloMessageDetailRouter);
