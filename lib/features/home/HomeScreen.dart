@@ -86,9 +86,10 @@ class HomeState extends CoreScreenState<HomeScreen> {
       unselectedLabelStyle: TextStyles.CAPTION.getStyle.copyWith(color: gray5),
       selectedItemColor: blue_primary_600,
       unselectedItemColor: gray5,
+      elevation: 4,
       items: [
-        _createBottomBarItem(IC_CALL, "Home", TabType.HOME,),
-        _createBottomBarItem(IC_CALL, "Profile", TabType.PROFILE),
+        _createBottomBarItem(IC_HOME_TAB_BAR, "Home", TabType.HOME,),
+        _createBottomBarItem(IC_PROFILE_TAB_BAR, "Profile", TabType.PROFILE),
       ],
     );
   }

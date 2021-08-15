@@ -24,18 +24,19 @@ class IncomingIGMessageWidget extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 60,
-            height: 32,
+            width: 56,
+            height: 28,
+            alignment: Alignment.bottomCenter,
             padding: EdgeInsets.only(left: 16, right: 12),
             child: shouldBorderBottomLeft ? ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
               child: avatar
             ) : SizedBox.shrink(),
           ),
           Flexible(
             child: Container(
               padding: EdgeInsets.only(left: 12, right: 12, bottom: 4, top: 8),
-              margin: EdgeInsets.only(right: 60),
+              margin: EdgeInsets.only(right: 54),
               decoration: BoxDecoration(
                   color: isInstagram ? gray_efef : gray_F1F1,
                   borderRadius: BorderRadius.only(

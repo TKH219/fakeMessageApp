@@ -182,6 +182,7 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
                       changeReceiverAvatar(),
                       SaveScreenshotWidget(
                         this.screenshotController,
+                        isPremiumUser: false,
                         onBegin: () {
                           setState(() {
                             showFunctionButton = false;

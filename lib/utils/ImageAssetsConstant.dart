@@ -11,7 +11,8 @@ const String IC_APP_STORE_BLACK_AND_WHITE_PNG = '${ASSETS_ICONS_PNG_PATH}ic_app_
 const String IC_RECORD_PNG = '${ASSETS_ICONS_PNG_PATH}ic_record.png';
 
 // MARK: SVG
-const String IC_CALL = '${ASSETS_ICONS_SVG_PATH}ic_call.svg';
+const String IC_HOME_TAB_BAR = '${ASSETS_ICONS_SVG_PATH}ic_home_tab_bar.svg';
+const String IC_PROFILE_TAB_BAR = '${ASSETS_ICONS_SVG_PATH}ic_profile_premium.svg';
 const String IC_AVATAR_DEFAULT = '${ASSETS_ICONS_SVG_PATH}ic_profile_avatar_default_user.svg';
 const String IC_SIGN_OUT = '${ASSETS_ICONS_SVG_PATH}ic_signout.svg';
 const String IC_CHANGE_PASSWORD = '${ASSETS_ICONS_SVG_PATH}ic_change_password.svg';

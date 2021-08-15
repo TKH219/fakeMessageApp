@@ -145,14 +145,16 @@ class ProfileState extends CoreScreenState<ProfileScreen> {
           SizedBox(
             width: 24,
           ),
-          ImageUtils.getOriginalImagesSvg(IC_AVATAR_DEFAULT,
-              width: 50, height: 50),
+          ImageUtils.getOriginalImagesSvg(
+              isPremiumUser ? IC_PROFILE_TAB_BAR : IC_AVATAR_DEFAULT,
+              width: 50,
+              height: 50),
           SizedBox(
             width: 15,
           ),
           Expanded(
             child: Text(getTitleUser(),
-                style: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray9)),
+                style: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray9, fontSize: 18)),
           ),
           Padding(
               padding: EdgeInsets.only(right: 16),

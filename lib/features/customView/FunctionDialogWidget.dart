@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
+import 'package:fake_message_screen/handler/StorageManager.dart';
 import 'package:fake_message_screen/model/MessageDetailModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
@@ -27,6 +28,18 @@ class FunctionDialogWidget extends CoreScreenWidget{
 }
 
 class FunctionDialogState extends CoreScreenState<FunctionDialogWidget> {
+
+  bool isPremiumUser = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.wait([StorageManager().getPremium()]).then((value) {
+      setState(() {
+        this.isPremiumUser = value[0];
+      });
+    });
+  }
 
   @override
   Widget buildMobileLayout(BuildContext context) {
@@ -77,17 +90,13 @@ class FunctionDialogState extends CoreScreenState<FunctionDialogWidget> {
             ),
             SizedBox(height: 12),
             changeReceiverAvatar(),
+            addNewMessageWidget(),
             SaveScreenshotWidget(
               this.screenshotController,
-              onBegin: () {
-                setState(() {
-                  showFunctionButton = false;
-                });
-              },
+              isPremiumUser: isPremiumUser,
+              onBegin: () {},
               onEnd: () {
-                setState(() {
-                  showFunctionButton = true;
-                });
+                Navigator.pop(context);
               },
             ),
             SizedBox(height: 12),
@@ -101,20 +110,48 @@ class FunctionDialogState extends CoreScreenState<FunctionDialogWidget> {
     );
   }
 
-  Widget addNewMessage() {
-    return AddNewMessageWidget(onDone: (messageModel) {
-      setState(() {
-        Navigator.pop(context);
-        widget.model.contents.add(messageModel);
-        widget.onDone(widget.model);
-      });
-    });
+  Widget addNewMessageWidget() {
+    return ListTile(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.add_circle_rounded,
+              size: 24,
+              color: gray9,
+            ),
+            SizedBox(width: 8),
+            Text(
+              'Add new message',
+              style: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray9),
+            ),
+          ],
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 0),
+        onTap: () {
+          Navigator.pop(context);
+          showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return AddNewMessageWidget(
+                  onDone: (messageModel) {
+                      widget.model.contents.add(messageModel);
+                      widget.onDone(widget.model);
+                  },
+                );
+              });
+        });
   }
 
   Widget changeReceiverAvatar() {
     return ChangeAvatarWidget((file) {
-      if (widget.onChangeAvatar != null) {
-        widget.onChangeAvatar!(file);
+      if (this.isPremiumUser) {
+        if (widget.onChangeAvatar != null) {
+          widget.onChangeAvatar!(file);
+        }
+      } else {
+        showToastMessage("You need to become a premium user first to use this function.");
       }
     });
   }

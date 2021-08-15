@@ -1,3 +1,4 @@
+import 'package:fake_message_screen/handler/StorageManager.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
 import 'package:fake_message_screen/utils/Utils.dart';
@@ -11,7 +12,8 @@ class SaveScreenshotWidget extends StatelessWidget {
   final ScreenshotController screenshotController;
   final Function? onBegin;
   final Function? onEnd;
-  SaveScreenshotWidget(this.screenshotController, {this.onBegin, this.onEnd});
+  final bool isPremiumUser;
+  SaveScreenshotWidget(this.screenshotController, {required this.isPremiumUser, this.onBegin, this.onEnd});
 
   @override
   Widget build(BuildContext context) {
@@ -27,30 +29,36 @@ class SaveScreenshotWidget extends StatelessWidget {
       ),
       contentPadding: EdgeInsets.symmetric(vertical: 0),
       onTap: () async {
-        if (this.onBegin != null) {
-          this.onBegin!();
-        }
-
-        double pixelRatio = MediaQuery.of(context).devicePixelRatio;
-        screenshotController
-            .capture(
-            delay: Duration(milliseconds: 10),
-            pixelRatio: pixelRatio)
-            .then((image) async {
-          if (image != null)  {
-            await ImageGallerySaver.saveImage(
-                image,
-                quality: 100,
-                name: "hello");
-
-            if (this.onEnd != null) {
-              this.onEnd!();
-            }
-
-            Utils.showToastMessage("Screenshot saved in your photos successfully.", ToastGravity.BOTTOM);
+        if (this.isPremiumUser) {
+          if (this.onBegin != null) {
+            this.onBegin!();
           }
-        });
-      },
+
+          double pixelRatio = MediaQuery
+              .of(context)
+              .devicePixelRatio;
+          screenshotController
+              .capture(
+              delay: Duration(milliseconds: 10),
+              pixelRatio: pixelRatio)
+              .then((image) async {
+            if (image != null) {
+              await ImageGallerySaver.saveImage(
+                  image,
+                  quality: 100,
+                  name: "hello");
+
+              if (this.onEnd != null) {
+                this.onEnd!();
+              }
+
+              Utils.showToastMessage("Screenshot saved in your photos successfully.");
+            }
+          });
+        } else {
+          Utils.showToastMessage("You need to become a premium user first to use this function.");
+        }
+      }
     );
   }
 

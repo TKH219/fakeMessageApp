@@ -1,9 +1,6 @@
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
 import 'package:fake_message_screen/features/InstagramMessageDetail/CustomView/IGMessageInputWidget.dart';
-import 'package:fake_message_screen/features/customView/AddNewMessageButton.dart';
-import 'package:fake_message_screen/features/customView/AddNewMessageWidget.dart';
-import 'package:fake_message_screen/features/customView/FunctionButton.dart';
 import 'package:fake_message_screen/features/customView/FunctionDialogWidget.dart';
 import 'package:fake_message_screen/features/home/selectApp/SelectAppScreen.dart';
 import 'package:fake_message_screen/features/instagramMessageDetail/customView/MessengerInputWidget.dart';
@@ -13,6 +10,7 @@ import 'package:fake_message_screen/utils/Constants.dart';
 import 'package:fake_message_screen/utils/ImageAssetsConstant.dart';
 import 'package:fake_message_screen/utils/ImageUtils.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
+import 'package:fake_message_screen/utils/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -132,54 +130,27 @@ class InstagramMessageDetailState
                         shouldBorderTopLeft: shouldShowBorderTop,
                         appSupport: widget.appSupport);
               }),
-          Positioned(
-              bottom: 120,
-              right: 16,
-              child: Visibility(
-                visible: showFunctionButton,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    AddNewMessageButton((model) {
-                      setState(() {
-                        this.model.contents.add(model);
-                      });
-                    }, haveAttachImageOption: false),
-                    SizedBox(width: 16),
-                    functionButton(),
-                  ],
-                ),
-              )),
+          // Positioned(
+          //     bottom: 120,
+          //     right: 16,
+          //     child: Visibility(
+          //       visible: showFunctionButton,
+          //       child: Row(
+          //         mainAxisSize: MainAxisSize.min,
+          //         mainAxisAlignment: MainAxisAlignment.end,
+          //         crossAxisAlignment: CrossAxisAlignment.center,
+          //         children: [
+          //           AddNewMessageButton((model) {
+          //             setState(() {
+          //               this.model.contents.add(model);
+          //             });
+          //           }, haveAttachImageOption: false),
+          //         ],
+          //       ),
+          //     )),
           buildInputWidget()
         ],
       ),
-    );
-  }
-
-  Widget functionButton() {
-    return FunctionButton(
-      onTap: () {
-        showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return FunctionDialogWidget(
-                model,
-                (_model) {
-                  setState(() {
-                    model = _model;
-                  });
-                },
-                onChangeAvatar: (file) {
-                  setState(() {
-                    avatarWidget = Image.file(file,
-                        width: 34, height: 34, fit: BoxFit.cover);
-                  });
-                },
-              );
-            });
-      },
     );
   }
 
@@ -190,7 +161,28 @@ class InstagramMessageDetailState
         bottom: isInstagram ? MediaQuery.of(context).padding.bottom : 0,
         left: 0,
         right: 0,
-        child: isInstagram ? IGMessageInputWidget() : MessengerInputWidget());
+        child: InkWell(
+            onTap: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return FunctionDialogWidget(
+                      model,
+                          (_model) {
+                        setState(() {
+                          model = _model;
+                        });
+                      },
+                      onChangeAvatar: (file) {
+                        setState(() {
+                          avatarWidget = Image.file(file,
+                              width: 34, height: 34, fit: BoxFit.cover);
+                        });
+                      },
+                    );
+                  });
+            },
+            child: isInstagram ? IGMessageInputWidget() : MessengerInputWidget()));
   }
 
   List<Widget> listActionButtonAppBar() {
