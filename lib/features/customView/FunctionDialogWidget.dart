@@ -1,14 +1,13 @@
 import 'dart:io';
-
-import 'package:fake_message_screen/core/CoreScreenWidget.dart';
-import 'package:fake_message_screen/core/CoreStateWidget.dart';
+import 'package:fake_message_screen/features/home/selectApp/SelectAppScreen.dart';
 import 'package:fake_message_screen/handler/StorageManager.dart';
 import 'package:fake_message_screen/model/MessageDetailModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
+import 'package:fake_message_screen/utils/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:screenshot/screenshot.dart';
 
 import 'AddNewMessageWidget.dart';
 import 'ChangeAvatarWidget.dart';
@@ -16,101 +15,82 @@ import 'ConfirmButton.dart';
 import 'CustomTextField.dart';
 import 'SaveScreenshotWidget.dart';
 
-class FunctionDialogWidget extends CoreScreenWidget{
-
+class FunctionDialogWidget extends StatelessWidget {
   MessageDetailModel model;
   Function(MessageDetailModel) onDone;
   Function(File)? onChangeAvatar;
-  FunctionDialogWidget(this.model, this.onDone, {this.onChangeAvatar});
+  ScreenshotController screenshotController;
+  AppSupport appSupport;
 
-  @override
-  FunctionDialogState createState() => FunctionDialogState();
-}
-
-class FunctionDialogState extends CoreScreenState<FunctionDialogWidget> {
+  FunctionDialogWidget(
+      this.model, this.appSupport, this.screenshotController, this.onDone,
+      {this.onChangeAvatar});
 
   bool isPremiumUser = false;
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
     Future.wait([StorageManager().getPremium()]).then((value) {
-      setState(() {
-        this.isPremiumUser = value[0];
-      });
+      this.isPremiumUser = value[0];
     });
-  }
 
-  @override
-  Widget buildMobileLayout(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + MediaQuery.of(context).viewInsets.bottom, left: 16, right: 16),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            SizedBox(height: 12),
-            CustomTextField(
-              onChanged: (text) {
-                setState(() {
-                  widget.model.receiverName = text;
-                });
-              },
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(width: 1, color: gray1),
-                  ),
-                  contentPadding:
-                  EdgeInsets.symmetric(horizontal: 12),
-                  hintStyle: TextStyles.NORMAL_LABEL.getStyle
-                      .copyWith(color: gray5),
-                  hintText: "Change phone number"),
-              maxLines: 1,
-            ),
-
-            SizedBox(height: 12),
-            CustomTextField(
-              onChanged: (text) {
-                setState(() {
-                  widget.model.lastTimeOnline = text;
-                });
-              },
-
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(width: 1, color: gray1),
-                  ),
-                  contentPadding:
-                  EdgeInsets.symmetric(horizontal: 12),
-                  hintStyle: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray5),
-                  hintText: "Change last time online"),
-              maxLines: 1,
-            ),
-            SizedBox(height: 12),
-            changeReceiverAvatar(),
-            addNewMessageWidget(),
-            SaveScreenshotWidget(
-              this.screenshotController,
-              isPremiumUser: isPremiumUser,
-              onBegin: () {},
-              onEnd: () {
-                Navigator.pop(context);
-              },
-            ),
-            SizedBox(height: 12),
-            ConfirmButton("done".toUpperCase(), onTapButton: () {
-              widget.onDone(widget.model);
-              Navigator.pop(context);
-            },)
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        SizedBox(height: 12),
+        CustomTextField(
+          onChanged: (text) {
+            this.model.receiverName = text;
+          },
+          decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(width: 1, color: gray1),
+              ),
+              contentPadding: EdgeInsets.symmetric(horizontal: 12),
+              hintStyle:
+                  TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray5),
+              hintText: this.appSupport == AppSupport.IMESS
+                  ? "Change phone number"
+                  : "Change username"),
+          maxLines: 1,
         ),
-      ),
+        SizedBox(height: 12),
+        CustomTextField(
+            onChanged: (text) {
+              this.model.lastTimeOnline = text;
+            },
+            decoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(width: 1, color: gray1)),
+                contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                hintStyle:
+                    TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray5),
+                hintText: this.appSupport == AppSupport.IMESS
+                    ? "Change number of unread messages"
+                    : "Change last time online"),
+            maxLines: 1,
+            keyboardType: this.appSupport == AppSupport.IMESS
+                ? TextInputType.number
+                : TextInputType.text),
+        SizedBox(height: 12),
+        changeReceiverAvatar(),
+        addNewMessageWidget(context),
+        SaveScreenshotWidget(this.screenshotController,
+            isPremiumUser: isPremiumUser, onBegin: () {}, onEnd: () {
+          Navigator.pop(context);
+        }),
+        SizedBox(height: 12),
+        ConfirmButton("done".toUpperCase(), onTapButton: () {
+          this.onDone(this.model);
+          Navigator.pop(context);
+        })
+      ],
     );
   }
 
-  Widget addNewMessageWidget() {
+  Widget addNewMessageWidget(BuildContext context) {
     return ListTile(
         title: Row(
           mainAxisSize: MainAxisSize.min,
@@ -131,27 +111,25 @@ class FunctionDialogState extends CoreScreenState<FunctionDialogWidget> {
         contentPadding: EdgeInsets.symmetric(vertical: 0),
         onTap: () {
           Navigator.pop(context);
-          showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return AddNewMessageWidget(
-                  onDone: (messageModel) {
-                      widget.model.contents.add(messageModel);
-                      widget.onDone(widget.model);
-                  },
-                );
-              });
+          Utils.showDialogForScaleHeight(context, AddNewMessageWidget(
+            haveAttachImageOption: this.appSupport == AppSupport.ZALO,
+            onDone: (messageModel) {
+              this.model.contents.add(messageModel);
+              this.onDone(this.model);
+            },
+          ));
         });
   }
 
   Widget changeReceiverAvatar() {
     return ChangeAvatarWidget((file) {
       if (this.isPremiumUser) {
-        if (widget.onChangeAvatar != null) {
-          widget.onChangeAvatar!(file);
+        if (this.onChangeAvatar != null) {
+          this.onChangeAvatar!(file);
         }
       } else {
-        showToastMessage("You need to become a premium user first to use this function.");
+        Utils.showToastMessage(
+            "You need to become a premium user first to use this function.");
       }
     });
   }

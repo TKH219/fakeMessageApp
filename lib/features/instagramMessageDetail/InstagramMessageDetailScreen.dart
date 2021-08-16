@@ -130,24 +130,6 @@ class InstagramMessageDetailState
                         shouldBorderTopLeft: shouldShowBorderTop,
                         appSupport: widget.appSupport);
               }),
-          // Positioned(
-          //     bottom: 120,
-          //     right: 16,
-          //     child: Visibility(
-          //       visible: showFunctionButton,
-          //       child: Row(
-          //         mainAxisSize: MainAxisSize.min,
-          //         mainAxisAlignment: MainAxisAlignment.end,
-          //         crossAxisAlignment: CrossAxisAlignment.center,
-          //         children: [
-          //           AddNewMessageButton((model) {
-          //             setState(() {
-          //               this.model.contents.add(model);
-          //             });
-          //           }, haveAttachImageOption: false),
-          //         ],
-          //       ),
-          //     )),
           buildInputWidget()
         ],
       ),
@@ -163,26 +145,27 @@ class InstagramMessageDetailState
         right: 0,
         child: InkWell(
             onTap: () {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return FunctionDialogWidget(
-                      model,
-                          (_model) {
-                        setState(() {
-                          model = _model;
-                        });
-                      },
-                      onChangeAvatar: (file) {
-                        setState(() {
-                          avatarWidget = Image.file(file,
-                              width: 34, height: 34, fit: BoxFit.cover);
-                        });
-                      },
-                    );
-                  });
+              Utils.showDialogForScaleHeight(
+                  context,
+                  FunctionDialogWidget(
+                    model,
+                    widget.appSupport,
+                    this.screenshotController,
+                    (_model) {
+                      setState(() {
+                        model = _model;
+                      });
+                    },
+                    onChangeAvatar: (file) {
+                      setState(() {
+                        avatarWidget = Image.file(file,
+                            width: 34, height: 34, fit: BoxFit.cover);
+                      });
+                    },
+                  ));
             },
-            child: isInstagram ? IGMessageInputWidget() : MessengerInputWidget()));
+            child:
+                isInstagram ? IGMessageInputWidget() : MessengerInputWidget()));
   }
 
   List<Widget> listActionButtonAppBar() {
@@ -194,15 +177,18 @@ class InstagramMessageDetailState
         icon: ImageUtils.getImagesSvg(IC_IG_VIDEO,
             width: 22, height: 28, color: Colors.black),
         padding: EdgeInsets.only(left: 18),
-        onPressed: () => Navigator.pop(context),
+        onPressed: null,
       ));
 
       listButton.add(IconButton(
         color: Colors.white,
         icon: ImageUtils.getImagesSvg(IC_IG_INFO,
-            boxFit: BoxFit.fill, width: 24, height: 24, color: Colors.black.withOpacity(0.6)),
+            boxFit: BoxFit.fill,
+            width: 24,
+            height: 24,
+            color: Colors.black.withOpacity(0.6)),
         padding: EdgeInsets.only(left: 18, right: 24),
-        onPressed: () => Navigator.pop(context),
+        onPressed: null,
       ));
     } else {
       listButton.add(IconButton(
@@ -210,7 +196,7 @@ class InstagramMessageDetailState
         icon: ImageUtils.getImagesSvg(IC_MESSENGER_CALL,
             width: 22, height: 22, color: purple_500),
         padding: EdgeInsets.only(left: 18),
-        onPressed: () => Navigator.pop(context),
+        onPressed: null,
       ));
 
       listButton.add(IconButton(
@@ -218,7 +204,7 @@ class InstagramMessageDetailState
         icon: ImageUtils.getImagesSvg(IC_MESSENGER_CAMERA,
             boxFit: BoxFit.fill, width: 24, height: 30, color: purple_500),
         padding: EdgeInsets.only(left: 18, right: 24),
-        onPressed: () => Navigator.pop(context),
+        onPressed: null,
       ));
     }
 

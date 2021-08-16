@@ -27,7 +27,7 @@ class IGMessageInputWidget extends StatelessWidget {
             padding: EdgeInsets.all(4),
             icon: Icon(Icons.photo_camera_rounded),
             iconSize: 24,
-            onPressed: () => Navigator.pop(context),
+            onPressed: null,
           ),
         ),
         Expanded(
@@ -41,7 +41,7 @@ class IGMessageInputWidget extends StatelessWidget {
           icon: ImageUtils.getImagesSvg(IC_IG_MICRO, color: Colors.black.withOpacity(0.8), width: 25, height: 25),
           iconSize: 25,
           padding: EdgeInsets.only(left: 12),
-          onPressed: () => Navigator.pop(context),
+          onPressed: null,
         ),
         SizedBox(width: 12),
         ImageUtils.getImagesSvg(IC_IG_IMAGE, color: Colors.black.withOpacity(0.8), width: 25, height: 25),

@@ -16,73 +16,52 @@ import 'ConfirmButton.dart';
 import 'CustomTextField.dart';
 import 'SelectMessageTypeWidget.dart';
 
-class AddNewMessageWidget extends CoreScreenWidget {
+class AddNewMessageWidget extends StatelessWidget {
   final Function(MessageItemModel)? onDone;
-  final bool haveAttachImageOption = false;
+  final bool haveAttachImageOption;
 
-  AddNewMessageWidget({this.onDone, haveAttachImageOption = false});
+  AddNewMessageWidget({this.onDone, this.haveAttachImageOption = false});
 
-  @override
-  AddNewMessageState createState() => AddNewMessageState();
-}
-
-class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
   MessageItemModel model = MessageItemModel();
 
   late List<ItemKey> listMessageType = [];
 
   @override
-  void initState() {
+  Widget build(BuildContext context) {
     MessageType.values.forEach((item) {
       listMessageType.add(ItemKey(item, item.getTitleDisplay()));
     });
 
-    super.initState();
-  }
-
-  @override
-  Widget buildMobileLayout(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-          top: 16,
-          left: 16,
-          right: 16,
-          bottom: MediaQuery.of(context).padding.bottom +
-              MediaQuery.of(context).viewInsets.bottom),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CustomTextField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(width: 1, color: gray1),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                  hintStyle:
-                      TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray5),
-                  hintText: "Contents..."),
-              maxLines: 1,
-              onChanged: (text) {
-                setState(() {
-                  model.content = text;
-                });
-              },
-            ),
-            SizedBox(height: 16),
-            SelectMessageTypeWidget(listMessageType),
-            attachImage(),
-            SizedBox(height: 16),
-            ConfirmButton("done".toUpperCase(), onTapButton: onTapDone)
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CustomTextField(
+          decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(width: 1, color: gray1),
+              ),
+              contentPadding: EdgeInsets.symmetric(horizontal: 12),
+              hintStyle:
+              TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray5),
+              hintText: "Contents..."),
+          maxLines: 1,
+          onChanged: (text) {
+              model.content = text;
+          },
         ),
-      ),
+        SizedBox(height: 16),
+        SelectMessageTypeWidget(listMessageType),
+        attachImage(context),
+        SizedBox(height: 16),
+        ConfirmButton("done".toUpperCase(), onTapButton: () => onTapDone(context))
+      ],
     );
   }
 
-  Widget attachImage() {
-    if (!widget.haveAttachImageOption) return SizedBox.shrink();
+  Widget attachImage(BuildContext context) {
+    return SizedBox.shrink();
+    if (!this.haveAttachImageOption) return SizedBox.shrink();
 
     return ListTile(
         title: Text(
@@ -97,13 +76,11 @@ class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
               final ImagePicker _picker = ImagePicker();
               final pickedFile =
                   await _picker.getImage(source: ImageSource.gallery);
-              setState(() {
                 if (pickedFile != null) {
                   model.imageFile = File(pickedFile.path);
                 }
 
-                onTapDone();
-              });
+                onTapDone(context);
             } catch (e) {
               print(e.toString());
             }
@@ -111,13 +88,13 @@ class AddNewMessageState extends CoreScreenState<AddNewMessageWidget> {
         });
   }
 
-  void onTapDone() {
+  void onTapDone(BuildContext context) {
     ItemKey? selectedItemKey =
         listMessageType.firstWhere((item) => item.isSelected == true);
     if (selectedItemKey != null) {
       this.model.messageType = selectedItemKey.key as MessageType;
-      if (widget.onDone != null) {
-        widget.onDone!(model);
+      if (this.onDone != null) {
+        this.onDone!(model);
       }
     }
 

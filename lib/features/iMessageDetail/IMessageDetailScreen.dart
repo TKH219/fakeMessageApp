@@ -1,18 +1,11 @@
-import 'dart:io';
-
 import 'package:fake_message_screen/core/CoreScreenWidget.dart';
 import 'package:fake_message_screen/core/CoreStateWidget.dart';
 import 'package:fake_message_screen/customBubbleChat/BubbleType.dart';
 import 'package:fake_message_screen/customBubbleChat/ChatBubble.dart';
 import 'package:fake_message_screen/customBubbleChat/clippers/ChatBubbleClipper3.dart';
 import 'package:fake_message_screen/customBubbleChat/clippers/ChatBubbleClipper5.dart';
-import 'package:fake_message_screen/features/customView/AddNewMessageButton.dart';
-import 'package:fake_message_screen/features/customView/AddNewMessageWidget.dart';
-import 'package:fake_message_screen/features/customView/ChangeAvatarWidget.dart';
-import 'package:fake_message_screen/features/customView/ConfirmButton.dart';
-import 'package:fake_message_screen/features/customView/CustomTextField.dart';
-import 'package:fake_message_screen/features/customView/FunctionButton.dart';
-import 'package:fake_message_screen/features/customView/SaveScreenshotWidget.dart';
+import 'package:fake_message_screen/features/customView/FunctionDialogWidget.dart';
+import 'package:fake_message_screen/features/home/selectApp/SelectAppScreen.dart';
 import 'package:fake_message_screen/model/MessageDetailModel.dart';
 import 'package:fake_message_screen/model/MessageItemModel.dart';
 import 'package:fake_message_screen/utils/ColorUtils.dart';
@@ -20,13 +13,9 @@ import 'package:fake_message_screen/utils/Constants.dart';
 import 'package:fake_message_screen/utils/ImageAssetsConstant.dart';
 import 'package:fake_message_screen/utils/ImageUtils.dart';
 import 'package:fake_message_screen/utils/StyleUtils.dart';
+import 'package:fake_message_screen/utils/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:image_picker/image_picker.dart';
-
-import '../../PermissionService.dart';
 import 'customView/IMessageInputField.dart';
 
 class IMessageDetailScreen extends CoreScreenWidget {
@@ -99,115 +88,29 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
                 }),
             Positioned(top: 0, left: 0, right: 0, child: appBarContent()),
             Positioned(
-                bottom: 120,
-                right: 16,
-                child: Visibility(
-                  visible: showFunctionButton,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      AddNewMessageButton((model) {
-                        setState(() {
-                          this.model.contents.add(model);
-                        });
-                      }, haveAttachImageOption: false),
-                      SizedBox(width: 16),
-                      functionButtonWidget(),
-                    ],
-                  ),
-                )),
-            Positioned(
-                bottom: 0, left: 0, right: 0, child: IMessageInputField()),
+                bottom: 0, left: 0, right: 0, child: InkWell(
+                onTap: () {
+                  Utils.showDialogForScaleHeight(context, FunctionDialogWidget(
+                    model,
+                    AppSupport.IMESS,
+                    this.screenshotController,
+                        (_model) {
+                      setState(() {
+                        unreadMessage = int.tryParse(model.lastTimeOnline) ?? 0;
+                        model = _model;
+                      });
+                    },
+                    onChangeAvatar: (file) {
+                      setState(() {
+                        avatarWidget = Image.file(file,
+                            width: 56, height: 56, fit: BoxFit.cover);
+                      });
+                    },
+                  ));
+                },
+                child: IMessageInputField())),
           ],
         ));
-  }
-
-  Widget functionButtonWidget() {
-    return FunctionButton(
-      onTap: () {
-        showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return Container(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom +
-                        MediaQuery.of(context).viewInsets.bottom,
-                    left: 16,
-                    right: 16),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      SizedBox(height: 12),
-                      CustomTextField(
-                        onChanged: (text) {
-                          setState(() {
-                            model.receiverName = text;
-                          });
-                        },
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(width: 1, color: gray1),
-                            ),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 12),
-                            hintStyle: TextStyles.NORMAL_LABEL.getStyle
-                                .copyWith(color: gray5),
-                            hintText: "Change phone number"),
-                        maxLines: 1,
-                      ),
-                      SizedBox(height: 12),
-                      CustomTextField(
-                        onChanged: (text) {
-                          setState(() {
-                            unreadMessage = int.parse(text);
-                          });
-                        },
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(width: 1, color: gray1),
-                            ),
-                            contentPadding:
-                            EdgeInsets.symmetric(horizontal: 12),
-                            hintStyle: TextStyles.NORMAL_LABEL.getStyle.copyWith(color: gray5),
-                            hintText: "Change number of unread messages"),
-                        maxLines: 1,
-                        keyboardType: TextInputType.number,
-                      ),
-                      SizedBox(height: 12),
-                      changeReceiverAvatar(),
-                      SaveScreenshotWidget(
-                        this.screenshotController,
-                        isPremiumUser: false,
-                        onBegin: () {
-                          setState(() {
-                            showFunctionButton = false;
-                          });
-                        },
-                        onEnd: () {
-                          setState(() {
-                            showFunctionButton = true;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 12),
-                      ConfirmButton(
-                        "done".toUpperCase(),
-                        onTapButton: () {
-                          Navigator.pop(context);
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              );
-            });
-      },
-    );
   }
 
   Widget appBarContent() {
@@ -295,19 +198,6 @@ class IMessageDetailState extends CoreScreenState<IMessageDetailScreen> {
         ),
       ),
     );
-  }
-
-  Widget changeReceiverAvatar() {
-    return ChangeAvatarWidget((file) {
-      setState(() {
-        avatarWidget = Image.file(
-          file,
-          height: 56,
-          width: 56,
-          fit: BoxFit.cover,
-        );
-      });
-    });
   }
 
   Widget getSenderView(CustomClipper<Path> clipper, BuildContext context,
