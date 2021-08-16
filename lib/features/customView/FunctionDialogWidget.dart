@@ -22,11 +22,11 @@ class FunctionDialogWidget extends StatelessWidget {
   ScreenshotController screenshotController;
   AppSupport appSupport;
 
+  bool isPremiumUser = false;
+
   FunctionDialogWidget(
       this.model, this.appSupport, this.screenshotController, this.onDone,
       {this.onChangeAvatar});
-
-  bool isPremiumUser = false;
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +77,7 @@ class FunctionDialogWidget extends StatelessWidget {
         SizedBox(height: 12),
         changeReceiverAvatar(),
         addNewMessageWidget(context),
-        SaveScreenshotWidget(this.screenshotController,
-            isPremiumUser: isPremiumUser, onBegin: () {}, onEnd: () {
-          Navigator.pop(context);
-        }),
+        saveScreenShot(context),
         SizedBox(height: 12),
         ConfirmButton("done".toUpperCase(), onTapButton: () {
           this.onDone(this.model);
@@ -132,5 +129,11 @@ class FunctionDialogWidget extends StatelessWidget {
             "You need to become a premium user first to use this function.");
       }
     });
+  }
+
+  Widget saveScreenShot(BuildContext context) {
+    return SaveScreenshotWidget(this.screenshotController, this.isPremiumUser, onBegin: () {}, onEnd: () {
+          Navigator.pop(context);
+        });
   }
 }

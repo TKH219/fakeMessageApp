@@ -14,15 +14,15 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'CustomView/InfoProfileItemWidget.dart';
 
-enum ProfileScreenStructure { UPGRADE_PREMIUM, RESTORE_PREMIUM, SIGN_OUT }
+enum ProfileScreenStructure { UPGRADE_PREMIUM, RESTORE_PREMIUM }
 
 extension ProfileScreenStructureExtension on ProfileScreenStructure {
   String getTitle() {
     switch (this) {
       case ProfileScreenStructure.UPGRADE_PREMIUM:
         return "Upgrade VIP";
-      case ProfileScreenStructure.SIGN_OUT:
-        return "Đăng xuất";
+      // case ProfileScreenStructure.SIGN_OUT:
+      //   return "Đăng xuất";
       case ProfileScreenStructure.RESTORE_PREMIUM:
         return "Restore VIP";
       default:
@@ -36,8 +36,8 @@ extension ProfileScreenStructureExtension on ProfileScreenStructure {
         return IC_CHANGE_PASSWORD;
       case ProfileScreenStructure.RESTORE_PREMIUM:
         return IC_CHANGE_PASSWORD;
-      case ProfileScreenStructure.SIGN_OUT:
-        return IC_CHANGE_PASSWORD;
+      // case ProfileScreenStructure.SIGN_OUT:
+      //   return IC_CHANGE_PASSWORD;
       default:
         return IC_CHANGE_PASSWORD;
     }

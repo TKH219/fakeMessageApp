@@ -13,7 +13,7 @@ class SaveScreenshotWidget extends StatelessWidget {
   final Function? onBegin;
   final Function? onEnd;
   final bool isPremiumUser;
-  SaveScreenshotWidget(this.screenshotController, {required this.isPremiumUser, this.onBegin, this.onEnd});
+  SaveScreenshotWidget(this.screenshotController, this.isPremiumUser, {this.onBegin, this.onEnd});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class SaveScreenshotWidget extends StatelessWidget {
       ),
       contentPadding: EdgeInsets.symmetric(vertical: 0),
       onTap: () async {
-        if (this.isPremiumUser) {
+        // if (this.isPremiumUser) {
           if (this.onBegin != null) {
             this.onBegin!();
           }
@@ -55,9 +55,9 @@ class SaveScreenshotWidget extends StatelessWidget {
               Utils.showToastMessage("Screenshot saved in your photos successfully.");
             }
           });
-        } else {
-          Utils.showToastMessage("You need to become a premium user first to use this function.");
-        }
+        // } else {
+        //   Utils.showToastMessage("You need to become a premium user first to use this function.");
+        // }
       }
     );
   }

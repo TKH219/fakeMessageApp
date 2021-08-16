@@ -21,6 +21,7 @@ class IncomingIGMessageWidget extends StatelessWidget {
     bool isInstagram = this.appSupport == AppSupport.INSTAGRAM;
 
     return Container(
+      margin: EdgeInsets.only(bottom: shouldBorderBottomLeft ? 6 : 0),
       child: Row(
         children: [
           Container(

@@ -18,6 +18,7 @@ class OutgoingIGMessageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(right: 16),
+      margin: EdgeInsets.only(bottom: shouldBorderBottomRight ? 6 : 0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.end,
