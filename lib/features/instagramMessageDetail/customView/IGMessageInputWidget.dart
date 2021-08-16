@@ -25,7 +25,7 @@ class IGMessageInputWidget extends StatelessWidget {
           child: IconButton(
             color: Colors.white,
             padding: EdgeInsets.all(4),
-            icon: Icon(Icons.photo_camera_rounded),
+            icon: Icon(Icons.photo_camera_rounded, color: Colors.white,),
             iconSize: 24,
             onPressed: null,
           ),
